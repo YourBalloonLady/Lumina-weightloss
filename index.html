@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lumina Weight | Tirzepatide & Retatrutide UK</title>
+<title>All Products - Lumina Weight</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -26,7 +26,6 @@
     margin: 0;
   }
 
-  /* NAVBAR */
   .navbar {
     background: #ffffff !important;
     box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
@@ -53,80 +52,22 @@
     color: var(--lw-dark);
   }
 
-  /* HERO */
-  .hero {
+  .page-hero {
     background: radial-gradient(circle at top left, var(--lw-mint-soft), #e0f2fe 40%, var(--lw-purple-soft) 100%);
-    padding: 120px 0 140px;
+    padding: 90px 0 70px;
+    text-align: center;
   }
-  .hero-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 14px;
-    border-radius: 999px;
-    background: rgba(34, 197, 94, 0.08);
-    color: #15803d;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-  .hero-eyebrow i {
-    font-size: 0.9rem;
-  }
-  .hero-title {
-    font-size: clamp(2.5rem, 5vw, 3.2rem);
+  .page-hero h1 {
     font-weight: 800;
-    line-height: 1.1;
-    margin-top: 18px;
   }
-  .hero-title span.highlight {
-    color: #0f766e;
-  }
-  .hero-subtitle {
+  .page-hero p {
     color: var(--lw-muted);
-    font-size: 1.05rem;
-    max-width: 550px;
-    margin: 16px auto 0;
-  }
-  .hero-cta {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-  .btn-primary-lw {
-    background: var(--lw-mint);
-    border-color: var(--lw-mint);
-    font-weight: 600;
-    padding-inline: 32px;
-    border-radius: 999px;
-  }
-  .btn-primary-lw:hover {
-    background: #16a34a;
-    border-color: #16a34a;
-  }
-  .btn-ghost {
-    border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.5);
-    font-weight: 500;
-    color: var(--lw-muted);
-    background: rgba(255, 255, 255, 0.8);
-  }
-  .btn-ghost:hover {
-    background: #ffffff;
-    color: var(--lw-dark);
+    max-width: 520px;
+    margin: 0 auto;
   }
 
-  /* PRODUCT SECTION */
   #products {
-    padding: 70px 0 80px;
-  }
-  .section-eyebrow {
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    font-size: 0.78rem;
-    color: #0f766e;
-    font-weight: 700;
+    padding: 60px 0 80px;
   }
   .section-title {
     font-size: 2rem;
@@ -189,8 +130,8 @@
     color: #ffffff;
   }
   .pill-best-value { background: #f97316; }
-  .pill-popular     { background: #22c55e; }
-  .pill-premium     { background: #6366f1; }
+  .pill-popular    { background: #22c55e; }
+  .pill-premium    { background: #6366f1; }
 
   .stock {
     font-size: 0.9rem;
@@ -204,7 +145,6 @@
     margin-top: 10px;
   }
 
-  /* CART SIDEBAR */
   .cart-sidebar {
     height: 100vh;
     width: 420px;
@@ -227,35 +167,13 @@
     z-index: 9998;
   }
   .overlay.show { display: block; }
-
-  .qty-btn { width: 38px; height: 38px; }
-  .qty-input { width: 60px; text-align: center; }
-
-  /* REVIEWS & CONTACT */
-  #reviews, #contact {
-    padding: 70px 0;
-  }
-  .review-card {
-    border-radius: 20px;
-    background: #ffffff;
-    padding: 24px;
-    box-shadow: 0 12px 32px rgba(15,23,42,0.06);
-  }
-
-  footer {
-    background: #020617;
-    color: #9ca3af;
-    padding: 22px 0;
-    font-size: 0.9rem;
-  }
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg fixed-top">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="#home">
+    <a class="navbar-brand d-flex align-items-center" href="index.html#home">
       <img src="LuminaLogoBlack.png" alt="Lumina Weight Logo">
       <span>Lumina Weight</span>
     </a>
@@ -266,24 +184,21 @@
 
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-        <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-        <li class="nav-item"><a class="nav-link" href="#reviews">Reviews</a></li>
-        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-        <li class="nav-item ms-lg-3">
-          <div class="position-relative">
-            <i class="fas fa-shopping-cart cart-icon" onclick="toggleCart()"></i>
-            <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-          </div>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="index.html#home">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html#reviews">Reviews</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
       </ul>
+      <div class="ms-lg-3 position-relative">
+        <i class="fas fa-shopping-cart cart-icon" onclick="toggleCart()"></i>
+        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+      </div>
     </div>
   </div>
 </nav>
 
 <div class="overlay" onclick="toggleCart()"></div>
 
-<!-- CART SIDEBAR -->
 <div class="cart-sidebar" id="cart-sidebar">
   <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center">
     <h5 class="mb-0 fw-semibold">Your Cart (<span id="cart-items-count">0</span>)</h5>
@@ -302,39 +217,18 @@
   </div>
 </div>
 
-<!-- HERO -->
-<section id="home" class="hero text-center">
+<section class="page-hero">
   <div class="container">
-    <div class="hero-eyebrow">
-      <i class="fa-solid fa-sparkles"></i>
-      Clinically Proven Results
-    </div>
-    <h1 class="hero-title">
-      Your Weight Loss <span class="highlight">Journey</span> Starts Here
-    </h1>
-    <p class="hero-subtitle">
-      Premium access to Tirzepatide and Retatrutide vials, backed by real-world experience and clinical data.
-    </p>
-    <div class="hero-cta">
-      <a href="#products" class="btn btn-primary-lw btn-lg">
-        Shop Featured Productss
-      </a>
-      <a href="products.html" class="btn btn-ghost btn-lg">
-        View All Products
-      </a>
-    </div>
+    <h1>All Lumina Products</h1>
+    <p>Browse every Tirzepatide and Retatrutide vial and pen option. Add what you need and head to checkout when you're ready.</p>
   </div>
 </section>
 
-<!-- FEATURED PRODUCTS (unchanged) -->
 <section id="products">
   <div class="container">
     <div class="text-center mb-5">
-      <div class="section-eyebrow">Products</div>
-      <h2 class="section-title">Choose Your Lumina Protocol</h2>
-      <p class="section-subtitle">
-        Flexible vial strengths so you can tailor dosing, whether you’re starting out or optimising results.
-      </p>
+      <h2 class="section-title">All Protocol Options</h2>
+      <p class="section-subtitle">Choose the vial or pen strength that fits your current stage.</p>
     </div>
     <div class="row g-4" id="product-list"></div>
   </div>
@@ -353,106 +247,41 @@
         <h3 id="modalName"></h3>
         <p class="product-price fs-1" id="modalPrice"></p>
         <p class="stock text-success mb-3" id="modalStock"></p>
-        <p id="modalDesc" class="text-muted mb-3"></p>
         <div class="d-flex justify-content-center align-items-center gap-3 my-4">
           <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
-          <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input">
+          <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input" style="width:80px;">
           <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(1)">+</button>
         </div>
-        <button id="modalAddBtn" class="btn btn-primary-lw btn-lg">Add to Cart</button>
+        <button id="modalAddBtn" class="btn btn-success btn-lg rounded-pill">Add to Cart</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- REVIEWS -->
-<section id="reviews">
-  <div class="container">
-    <div class="text-center mb-4">
-      <div class="section-eyebrow">Reviews</div>
-      <h2 class="section-title">What Clients Are Saying</h2>
-      <p class="section-subtitle">Real feedback from people using Lumina-guided protocols.</p>
-    </div>
-
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="review-card h-100">
-          <p class="mb-3">“Down over 2 stone with Tirzepatide. Support has been spot on and vials are clearly labelled with dosing help.”</p>
-          <span class="fw-semibold">— Client A</span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="review-card h-100">
-          <p class="mb-3">“Retatrutide gave me the results I couldn’t get elsewhere. Appetite quiet, energy up, and smooth delivery process.”</p>
-          <span class="fw-semibold">— Client B</span>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="review-card h-100">
-          <p class="mb-3">“Site is easy to use, checkout simple, and communication fast. Happy to recommend Lumina Weight.”</p>
-          <span class="fw-semibold">— Client C</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="container">
-    <div class="row align-items-center g-4">
-      <div class="col-lg-6">
-        <div class="section-eyebrow">Contact</div>
-        <h2 class="section-title mt-1">Questions about dosing or protocols?</h2>
-        <p class="section-subtitle text-start">
-          Drop us a message with your goals and previous experience and we’ll help you choose the right starting point.
-        </p>
-        <ul class="list-unstyled mt-3">
-          <li><i class="fa-regular fa-envelope me-2 text-primary"></i>Email: luminaweight@gmail.com</li>
-        </ul>
-      </div>
-      <div class="col-lg-6">
-        <div class="card shadow-sm border-0">
-          <div class="card-body p-4">
-            <h5 class="fw-semibold mb-3">Quick message</h5>
-            <form id="quickMessageForm">
-              <div class="mb-3">
-                <input type="text" id="qm-name" class="form-control" placeholder="Name" required>
-              </div>
-              <div class="mb-3">
-                <input type="email" id="qm-email" class="form-control" placeholder="Email" required>
-              </div>
-              <div class="mb-3">
-                <textarea id="qm-message" class="form-control" rows="3" placeholder="How can we help?" required></textarea>
-              </div>
-              <button type="submit" id="qm-button" class="btn btn-primary-lw w-100">Send enquiry</button>
-              <p id="qm-status" class="mt-2 small text-muted"></p>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer class="text-center">
-  <div class="container">
-    <p class="mb-0">© 2025 Lumina Weight • Premium Weight Loss Peptides • Research Purposes Only • Not For Human Consumption</p>
-  </div>
-</footer>
-
 <script>
-// featured products (same set you had before)
-const products = [
-  {img:"20mg Tirz Vial.png", name:"Tirzepatide 20mg Vial", price:90, stock:22, badge:"Best Seller", badgeClass:"pill-popular", type:"tirz_vial"},
-  {img:"20mg Reta Vial.png", name:"Retatrutide 20mg Vial", price:120, stock:19, badge:"Best Seller", badgeClass:"pill-popular", type:"reta_vial"},
-  {img:"20mg Reta Pen.png", name:"Retatrutide 20mg Pen", price:130, stock:10, badge:"Best Seller", badgeClass:"pill-popular", type:"reta_pen"},
-  {img:"20mg Tirz Pen.png", name:"Tirzepatide 20mg Pen", price:100, stock:10, badge:"Best Seller", badgeClass:"pill-popular", type:"tirz_pen"}
-];
+// --- PRODUCTS: VIALS + PENS ---
 
-// simple description lookups
-const tirzDesc = "Tirzepatide is a dual GIP/GLP-1 receptor agonist studied for its powerful impact on weight loss, appetite control, insulin sensitivity, and metabolic balance. It is administered as a once-weekly subcutaneous injection and is used in research and clinical settings for long-term weight management.";
-const retaDesc = "Retatrutide is a next-generation multi-receptor agonist being studied for its strong effects on weight loss, appetite regulation, and metabolic health. It is administered as a once-weekly subcutaneous injection and is used in research and clinical development for advanced weight management strategies.";
+const products = [
+  // VIALS
+  {img:"10mg Tirz Vial.png", name:"Tirzepatide 10mg Vial", price:70, stock:15},
+  {img:"20mg Tirz Vial.png", name:"Tirzepatide 20mg Vial", price:90, stock:22, badge:"Best Seller", badgeClass:"pill-popular"},
+  {img:"40mg Tirz Vial.png", name:"Tirzepatide 40mg Vial", price:115, stock:8},
+  {img:"60mg Tirz Vial.png", name:"Tirzepatide 60mg Vial", price:130, stock:3, badge:"Premium", badgeClass:"pill-premium"},
+
+  {img:"20mg Reta Vial.png", name:"Retatrutide 20mg Vial", price:120, stock:19, badge:"Best Seller", badgeClass:"pill-popular"},
+  {img:"40mg Reta Vial.png", name:"Retatrutide 40mg Vial", price:140, stock:11},
+  {img:"60mg Reta Vial.png", name:"Retatrutide 60mg Vial", price:160, stock:5, badge:"Premium", badgeClass:"pill-premium"},
+
+  // PENS
+  {img:"10mg Tirz Pen.png", name:"Tirzepatide 10mg Pen", price:80, stock:10},
+  {img:"20mg Tirz Pen.png", name:"Tirzepatide 20mg Pen", price:100, stock:10, badge:"Best Seller", badgeClass:"pill-popular"},
+  {img:"40mg Tirz Pen.png", name:"Tirzepatide 40mg Pen", price:125, stock:10},
+  {img:"60mg Tirz Pen.png", name:"Tirzepatide 60mg Pen", price:140, stock:10, badge:"Premium", badgeClass:"pill-premium"},
+
+  {img:"20mg Reta Pen.png", name:"Retatrutide 20mg Pen", price:130, stock:10, badge:"Best Seller", badgeClass:"pill-popular"},
+  {img:"40mg Reta Pen.png", name:"Retatrutide 40mg Pen", price:150, stock:10},
+  {img:"60mg Reta Pen.png", name:"Retatrutide 60mg Pen", price:170, stock:10, badge:"Premium", badgeClass:"pill-premium"}
+];
 
 let cart = [];
 const savedCart = localStorage.getItem('cart');
@@ -468,14 +297,18 @@ function saveCart() {
 
 function renderProducts() {
   document.getElementById('product-list').innerHTML = products.map((p, i) => `
-    <div class="col-md-3">
+    <div class="col-md-4">
       <div class="position-relative h-100 product-card ${p.stock===0?'out-of-stock':''}" onclick="${p.stock>0?'openModal('+i+')':''}">
         ${p.badge ? `<span class="pill-label ${p.badgeClass || ''}">${p.badge}</span>` : ''}
         <img src="${p.img}" class="w-100 p-4" alt="${p.name}">
         <div class="product-body d-flex flex-column">
           <div class="text-start">
             <div class="text-uppercase text-xs text-muted" style="font-size: .75rem;">
-              ${p.name.includes('Retatrutide') ? (p.name.includes('Pen') ? 'RETATRUTIDE PEN' : 'RETATRUTIDE VIAL') : (p.name.includes('Pen') ? 'TIRZEPATIDE PEN' : 'TIRZEPATIDE VIAL')}
+              ${
+                p.name.includes('Retatrutide')
+                  ? (p.name.includes('Pen') ? 'RETATRUTIDE PEN' : 'RETATRUTIDE VIAL')
+                  : (p.name.includes('Pen') ? 'TIRZEPATIDE PEN' : 'TIRZEPATIDE VIAL')
+              }
             </div>
             <div class="product-name">${p.name}</div>
           </div>
@@ -515,17 +348,6 @@ function openModal(i) {
   document.getElementById('modalStock').innerHTML = currentProduct.stock > 0
     ? `In stock – ${currentProduct.stock}`
     : 'Out of stock';
-
-  // description
-  const descEl = document.getElementById('modalDesc');
-  if (currentProduct.type && currentProduct.type.startsWith('tirz')) {
-    descEl.textContent = tirzDesc;
-  } else if (currentProduct.type && currentProduct.type.startsWith('reta')) {
-    descEl.textContent = retaDesc;
-  } else {
-    descEl.textContent = "";
-  }
-
   document.getElementById('modalQty').value = 1;
 
   document.getElementById('modalAddBtn').onclick = () => {
