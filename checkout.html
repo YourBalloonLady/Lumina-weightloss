@@ -183,7 +183,7 @@
 </script>
 
 <script>
-// Get cart from query string
+// --------------- CART FROM URL ---------------
 function getCart() {
   const params = new URLSearchParams(window.location.search);
   const data = params.get('cart');
@@ -210,10 +210,11 @@ document.getElementById('order-summary').innerHTML = cart.map(i => `
 `).join('');
 document.getElementById('final-total').textContent = `£${total.toFixed(2)}`;
 
-// build text for emails
+// --------------- HELPERS ---------------
 function buildItemsText() {
   return cart.map(i => `${i.qty} × ${i.name} — £${(i.price * i.qty).toFixed(2)}`).join('\n');
 }
+
 function buildAddressText(details) {
   return [
     details.address1,
@@ -223,7 +224,6 @@ function buildAddressText(details) {
   ].filter(Boolean).join('\n');
 }
 
-// ✅ clear cart stored on main site
 function clearStoredCart() {
   try {
     localStorage.removeItem('cart');
@@ -232,16 +232,18 @@ function clearStoredCart() {
   }
 }
 
-// ✅ Admin email (to you)
+// --------------- EMAILS ---------------
+
+// 📥 ADMIN EMAIL TO YOU – template_juevvvd
 function sendAdminEmail(details) {
   const itemsText = buildItemsText();
   const addressText = buildAddressText(details);
 
   emailjs.send(
     'service_i5zi096',
-    'template_x5lnd1u',
+    'template_juevvvd',
     {
-      to_email: 'luminaweight@gmail.com',
+      to_email: 'luminaweight@gmail.com',        // recipient = you
       customer_name: details.name,
       customer_phone: details.phone,
       customer_address: addressText,
@@ -254,18 +256,18 @@ function sendAdminEmail(details) {
   .catch(err => console.error('❌ Admin email failed', err));
 }
 
-// ✅ Customer confirmation email
+// 🧑‍💻 CUSTOMER EMAIL – template_x5lnd1u
 function sendCustomerEmail(details) {
   const itemsText = buildItemsText();
   const addressText = buildAddressText(details);
 
   emailjs.send(
-    'service_x5lnd1u',
-    'template_juevvvd',
+    'service_i5zi096',
+    'template_x5lnd1u',
     {
-      // send both, so template can use either {{customer_email}} or {{to_email}}
-      customer_email: details.email,
+      // Make sure your template uses {{to_email}} as the "To" address
       to_email: details.email,
+      customer_email: details.email,             // spare variable if template uses this
       customer_name: details.name,
       customer_address: addressText,
       order_reference: details.ref,
@@ -277,6 +279,7 @@ function sendCustomerEmail(details) {
   .catch(err => console.error('❌ Customer email failed', err));
 }
 
+// --------------- FORM SUBMIT ---------------
 document.getElementById('addressForm').onsubmit = function(e) {
   e.preventDefault();
 
@@ -303,11 +306,11 @@ document.getElementById('addressForm').onsubmit = function(e) {
   document.getElementById('payment-amount').textContent = `£${total.toFixed(2)}`;
   document.getElementById('order-ref').textContent = ref;
 
-  // 🔥 send emails
+  // Send emails
   sendAdminEmail(details);
   sendCustomerEmail(details);
 
-  // 🧹 clear stored cart so basket is empty when they go back
+  // Clear cart storage so basket is empty when back on main page
   clearStoredCart();
 
   // Show modal
@@ -321,7 +324,7 @@ function copyAmount() {
 }
 
 function backToShop() {
-  // just go back to home – no cart in query now
+  // Just go home – no cart in query string
   window.location.href = 'index.html';
 }
 </script>
