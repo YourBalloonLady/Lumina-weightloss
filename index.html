@@ -582,5 +582,51 @@ function goToCheckout() {
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+(function () {
+  emailjs.init('uZOuTrBdIAc6AmKjo'); // ✅ your public key
+})();
+
+const qmForm = document.getElementById('quickMessageForm');
+const qmBtn = document.getElementById('qm-button');
+const qmStatus = document.getElementById('qm-status');
+
+if (qmForm) {
+  qmForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById('qm-name').value.trim();
+    const email = document.getElementById('qm-email').value.trim();
+    const message = document.getElementById('qm-message').value.trim();
+
+    qmBtn.disabled = true;
+    qmBtn.textContent = 'Sending...';
+
+    emailjs.send(
+      'service_i5zi096',
+      'template_x5lnd1u',   // ✅ REUSING YOUR ADMIN ORDER TEMPLATE
+      {
+        to_email: 'luminaweight@gmail.com',
+        customer_name: name,
+        customer_phone: email,
+        customer_address: "Quick Message (No Address)",
+        order_reference: "ENQUIRY-" + Date.now().toString().slice(-5),
+        order_items: message,
+        order_total: "N/A"
+      }
+    ).then(() => {
+      qmStatus.textContent = "Thanks! Your message has been sent.";
+      qmForm.reset();
+    }).catch(() => {
+      qmStatus.textContent = "Error sending message. Please try again.";
+    }).finally(() => {
+      qmBtn.disabled = false;
+      qmBtn.textContent = 'Send enquiry';
+    });
+
+  });
+}
+</script>
 </body>
 </html>
