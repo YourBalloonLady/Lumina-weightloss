@@ -3,49 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout - LuminaWeight</title>
+<title>Checkout - Lumina Weight</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
-  body { background: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
-  .hero { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 80px 0; }
+  :root {
+    --lw-mint: #22c55e;
+    --lw-mint-soft: #ecfdf5;
+    --lw-blue-soft: #e0f2fe;
+    --lw-purple-soft: #eef2ff;
+    --lw-dark: #0f172a;
+    --lw-muted: #64748b;
+    --lw-bg: #f3f4f6;
+  }
+
+  body {
+    background: var(--lw-bg);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .hero {
+    background: radial-gradient(circle at top left, var(--lw-mint-soft), #e0f2fe 40%, var(--lw-purple-soft) 100%);
+    color: var(--lw-dark);
+    padding: 80px 0 70px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-weight: 800;
+  }
+  .hero p {
+    color: var(--lw-muted);
+    max-width: 500px;
+    margin: 0 auto 10px;
+  }
+  .btn-outline-light {
+    border-radius: 999px;
+    border-color: rgba(148,163,184,0.6);
+    color: var(--lw-muted);
+  }
+  .btn-outline-light:hover {
+    background: #ffffff;
+    color: var(--lw-dark);
+  }
+
+  .card {
+    border-radius: 24px;
+    border: 0;
+    box-shadow: 0 20px 45px rgba(15,23,42,0.10);
+  }
+
+  .form-control {
+    border-radius: 12px;
+  }
+
+  #final-total {
+    color: #16a34a;
+  }
+
+  .modal-content {
+    border-radius: 20px;
+  }
+  .modal-header {
+    background: var(--lw-mint);
+    color: #ffffff;
+  }
+  .alert-info {
+    background-color: var(--lw-blue-soft);
+    border-color: transparent;
+    color: var(--lw-dark);
+  }
 </style>
 </head>
 <body>
 
-<div class="hero text-center">
+<div class="hero">
   <div class="container">
-    <h1 class="display-4 fw-bold">Checkout</h1>
-    <p class="lead">Enter your delivery details below</p>
-    <button class="btn btn-outline-light btn-sm" onclick="backToShop()">Back to Shop</button>
+    <h1 class="display-5 fw-bold">Checkout</h1>
+    <p>Enter your delivery details so we can generate your order reference and payment info.</p>
+    <button class="btn btn-outline-light btn-sm mt-2" onclick="backToShop()">← Back to shop</button>
   </div>
 </div>
 
 <div class="container my-5">
   <div class="row justify-content-center">
     <div class="col-lg-8">
-      <div class="card shadow">
+      <div class="card">
         <div class="card-body p-5">
           <form id="addressForm">
-            <h4 class="mb-4">Delivery Address</h4>
+            <h4 class="mb-4 fw-semibold">Delivery address</h4>
             <div class="row g-3">
-              <div class="col-md-6"><input type="text" class="form-control" id="fullName" placeholder="Full Name" required></div>
-              <div class="col-md-6"><input type="tel" class="form-control" id="phone" placeholder="Phone Number" required></div>
-              <div class="col-12"><input type="text" class="form-control" id="address1" placeholder="Address Line 1" required></div>
-              <div class="col-12"><input type="text" class="form-control" id="address2" placeholder="Address Line 2 (optional)"></div>
-              <div class="col-md-6"><input type="text" class="form-control" id="city" placeholder="City" required></div>
-              <div class="col-md-6"><input type="text" class="form-control" id="postcode" placeholder="Postcode" required></div>
+              <div class="col-md-6">
+                <input type="text" class="form-control" id="fullName" placeholder="Full name" required>
+              </div>
+              <div class="col-md-6">
+                <input type="tel" class="form-control" id="phone" placeholder="Phone number" required>
+              </div>
+              <div class="col-12">
+                <input type="text" class="form-control" id="address1" placeholder="Address line 1" required>
+              </div>
+              <div class="col-12">
+                <input type="text" class="form-control" id="address2" placeholder="Address line 2 (optional)">
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control" id="city" placeholder="City" required>
+              </div>
+              <div class="col-md-6">
+                <input type="text" class="form-control" id="postcode" placeholder="Postcode" required>
+              </div>
             </div>
-            
+
             <hr class="my-4">
-            <h4>Order Summary</h4>
+
+            <h4 class="fw-semibold mb-3">Order summary</h4>
             <div id="order-summary"></div>
             <div class="d-flex justify-content-between fs-4 fw-bold mt-3">
               <span>Total:</span>
-              <span id="final-total" class="text-success">£0.00</span>
+              <span id="final-total">£0.00</span>
             </div>
-            
-            <button type="submit" class="btn btn-success btn-lg w-100 mt-4">
-              Confirm Order → Payment Details
+
+            <button type="submit" class="btn btn-success btn-lg w-100 mt-4 rounded-pill">
+              Confirm order → Payment details
             </button>
           </form>
         </div>
@@ -54,32 +131,46 @@
   </div>
 </div>
 
+<!-- PAYMENT MODAL -->
 <div class="modal fade" id="paymentModal" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title">Order Confirmed – Payment Details</h5>
+      <div class="modal-header">
+        <h5 class="modal-title">Order confirmed – payment details</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <div class="alert alert-success">Thank you <strong id="customerName"></strong>! Your order is confirmed.</div>
-        <h5>Your Order</h5>
-        <div id="payment-summary" class="mb-4"></div>
-        <h4 class="text-success">Total to pay: <span id="payment-total"></span></h4>
+        <div class="alert alert-success">
+          Thank you <strong id="customerName"></strong>! Your order has been recorded.
+        </div>
+
+        <h5 class="fw-semibold">Your order</h5>
+        <div id="payment-summary" class="mb-3"></div>
+
+        <h4 class="text-success mb-3">
+          Total to pay: <span id="payment-total"></span>
+        </h4>
+
         <div class="alert alert-info text-center fs-3 fw-bold p-4" id="payment-amount"></div>
-        <hr>
-        <p class="fw-bold mb-2">Bank Transfer Details (UK Faster Payments)</p>
+
+        <hr class="my-4">
+
+        <p class="fw-bold mb-2">Bank transfer details (UK Faster Payments)</p>
         <ul class="list-unstyled">
-          <li><strong>Account Name:</strong> LuminaWeight Ltd</li>
-          <li><strong>Sort Code:</strong> 12-34-56</li>
-          <li><strong>Account Number:</strong> 12345678</li>
+          <li><strong>Account name:</strong> LuminaWeight Ltd</li>
+          <li><strong>Sort code:</strong> 12-34-56</li>
+          <li><strong>Account number:</strong> 12345678</li>
           <li><strong>Reference:</strong> <span id="order-ref" class="text-primary fw-bold"></span></li>
         </ul>
-        <p>Or message us: <a href="https://wa.me/447123456789" target="_blank">WhatsApp 07123 456789</a></p>
+
+        <p class="mt-3 mb-0">
+          Need help? Message us on WhatsApp:
+          <a href="https://wa.me/447123456789" target="_blank">07123 456789</a>
+        </p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-success" onclick="copyAmount()">Copy Amount</button>
-        <button type="button" class="btn btn-outline-success" onclick="backToShop()">Back to Shop</button>
+        <button class="btn btn-success" onclick="copyAmount()">Copy amount</button>
+        <button type="button" class="btn btn-outline-success" onclick="backToShop()">Back to shop</button>
       </div>
     </div>
   </div>
@@ -98,7 +189,7 @@ function getCart() {
 
 const cart = getCart();
 if (cart.length === 0) {
-  alert('Your cart is empty! Taking you back...');
+  alert('Your cart is empty! Taking you back to the shop.');
   window.location.href = 'index.html';
 }
 
@@ -116,15 +207,18 @@ document.getElementById('addressForm').onsubmit = function(e) {
   e.preventDefault();
   const name = document.getElementById('fullName').value.trim() || 'Customer';
   const ref = 'LW' + Date.now().toString().slice(-6);
-  
+
   document.getElementById('customerName').textContent = name;
   document.getElementById('payment-summary').innerHTML = cart.map(i => `
-    <div class="d-flex justify-content-between"><span>${i.qty} × ${i.name}</span><span>£${(i.price*i.qty).toFixed(2)}</span></div>
+    <div class="d-flex justify-content-between">
+      <span>${i.qty} × ${i.name}</span>
+      <span>£${(i.price*i.qty).toFixed(2)}</span>
+    </div>
   `).join('');
   document.getElementById('payment-total').textContent = `£${total.toFixed(2)}`;
   document.getElementById('payment-amount').textContent = `£${total.toFixed(2)}`;
   document.getElementById('order-ref').textContent = ref;
-  
+
   new bootstrap.Modal(document.getElementById('paymentModal')).show();
 };
 
@@ -134,12 +228,12 @@ function copyAmount() {
     .catch(() => alert('Copy failed – please select and copy manually'));
 }
 
-// THIS IS THE KEY FUNCTION – keeps basket when going back
 function backToShop() {
   const cartData = encodeURIComponent(JSON.stringify(cart));
   window.location.href = `index.html?cart=${cartData}`;
 }
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
