@@ -82,7 +82,7 @@
 </head>
 <body>
 
-<!-- NAVBAR (same style as index) -->
+<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center" href="index.html#home">
@@ -151,6 +151,14 @@
   const ordersEl   = document.getElementById('orders-list');
   const logoutBtn  = document.getElementById('logout-btn');
 
+  function getStatusBadge(status) {
+    const s = (status || 'Pending').toLowerCase();
+    if (s === 'paid')   return '<span class="badge bg-success-subtle text-success badge-status">PAID</span>';
+    if (s === 'shipped')return '<span class="badge bg-primary-subtle text-primary badge-status">SHIPPED</span>';
+    if (s === 'cancelled')return '<span class="badge bg-danger-subtle text-danger badge-status">CANCELLED</span>';
+    return '<span class="badge bg-warning-subtle text-warning badge-status">PENDING</span>';
+  }
+
   async function loadAccount() {
     const { data: { user }, error } = await supabaseClient.auth.getUser();
 
@@ -192,31 +200,28 @@
     ordersEl.innerHTML = orders.map(order => {
       const created = new Date(order.created_at).toLocaleString();
       const total   = Number(order.total_amount || 0).toFixed(2);
+      const ref     = order.reference || (order.id ? order.id.slice(0,8) + '…' : 'N/A');
 
       let itemsHtml = '';
       if (order.details && order.details.items && Array.isArray(order.details.items)) {
         itemsHtml = order.details.items.map(item => `
           <div class="small text-muted">
-            ${item.qty} × ${item.name}${item.dose ? ` (${item.dose})` : ''} – £${Number(item.price_each || 0).toFixed(2)} each
+            ${item.qty} × ${item.name} – £${Number(item.price_each || 0).toFixed(2)} each
           </div>
-        `).join('');
+        `.trim()).join('');
       }
-
-      const statusLabel = order.status || 'Pending';
 
       return `
         <div class="order-card mb-3">
           <div class="d-flex justify-content-between flex-wrap gap-2">
             <div>
-              <div class="small text-muted">Order ID</div>
-              <div class="fw-semibold">${order.id.slice(0, 8)}…</div>
+              <div class="small text-muted">Order reference</div>
+              <div class="fw-semibold">${ref}</div>
               <div class="small text-muted mt-1">${created}</div>
             </div>
             <div class="text-end">
-              <span class="badge bg-success-subtle text-success badge-status mb-1">
-                ${statusLabel}
-              </span>
-              <div class="fw-bold fs-5">£${total}</div>
+              ${getStatusBadge(order.status)}
+              <div class="fw-bold fs-5 mt-1">£${total}</div>
             </div>
           </div>
           ${itemsHtml ? `<div class="mt-2">${itemsHtml}</div>` : ''}
