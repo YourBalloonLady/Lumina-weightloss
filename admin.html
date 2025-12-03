@@ -150,17 +150,13 @@
       ref
     );
 
-    emailjs
-      .send(
-        'service_i5zi096', 
-        'template_shipped',
-        {
-        to_email: toEmail,
-        customer_name: customerName,
-        order_reference: ref,
-        order_items: items,
-        order_total: total,
-      })
+    emailjs.send("service_i5zi096", "template_shipped", {
+  email: toEmail, // ✅ MUST MATCH {{email}} IN TEMPLATE
+  customer_name: customerName,
+  order_reference: ref,
+  order_items: items,
+  order_total: total,
+});
       .then((res) => {
         console.log("✅ Shipped email sent", res.status, res.text);
       })
