@@ -368,6 +368,40 @@
   window.toggleCart = toggleCart;
   window.goToCheckout = goToCheckout;
 
+  // ------- SEEDED REAL REVIEWS (your 5 customers) -------
+  const seededReviews = [
+    {
+      name: "Sarah J., Manchester",
+      rating: 5,
+      message: `Started my research protocol with the 10mg Tirzepatide vial, and Lumina's made it seamless. Discreet packaging arrived in 2 days, no fuss with bank transfer, email instructions were crystal clear. Already noticing better appetite control in my trials; down 1.5 stone in a month. Support team's dosing advice via email was spot on for a newbie. Highly recommend for UK researchers – professional and reliable!`,
+      created_label: "05 Nov 2025"
+    },
+    {
+      name: "Mike T., London",
+      rating: 5,
+      message: `Grabbed a couple of Retatrutide pens for metabolic studies, and the quality is top notch. The guidance email helped nail the weekly dosing. Price point is fair for research grade stuff, and delivery was stealthy as promised. Solid results in glucose regulation data. Lumina's my go to now – efficient and trustworthy.`,
+      created_label: "28 Oct 2025"
+    },
+    {
+      name: "Emma R., Edinburgh",
+      rating: 5,
+      message: `As a busy mum dipping into weight management research, Lumina's been a game changer. Ordered the Tirzepatide 10mg vial, and the once weekly sub-Q setup fits perfectly. Fantastic support, replied to my protocol query in under 24 hours with tailored tips. Packaging was unmarked, and I've hit steady progress (over 2 stone lost). Ethical, UK based, and effective – five stars all day!`,
+      created_label: "05 Sept 2025"
+    },
+    {
+      name: "David K., Birmingham",
+      rating: 5,
+      message: `Switched to Lumina after sketchy overseas suppliers, and wow what a difference. The vials arrived lab fresh, with clear labels and reconstitution notes. Bank transfer was secure and straightforward – no card details needed, which I love for privacy. Early trial data shows strong insulin sensitivity improvements. If you're serious about GLP-1 research, start here – discreet, fast, and legit.`,
+      created_label: "20 Sept 2025"
+    },
+    {
+      name: "Lisa M., Bristol",
+      rating: 5,
+      message: `First-time buyer for Tirzepatide pens, and Lumina exceeded expectations. Super helpful email on starting doses for my bodyweight reduction studies, kept it simple and science-backed. Shipped next day, and the product's purity is evident in the consistent results. Affordable at that price, with zero hassle. Grateful for a UK supplier that's all about quality and support!`,
+      created_label: "10 Nov 2025"
+    }
+  ];
+
   // ------- LOAD APPROVED REVIEWS -------
   const reviewsListEl = document.getElementById('reviews-list');
   const avgRatingEl   = document.getElementById('avg-rating');
@@ -380,19 +414,35 @@
   }
 
   async function loadReviews() {
-    const { data, error } = await supabaseClient
-      .from('Reviews')
-      .select('*')
-      .eq('approved', true)
-      .order('created_at', { ascending: false });
+    let dbReviews = [];
+    let error = null;
 
-    if (error) {
-      console.error('Error loading reviews', error);
+    try {
+      const res = await supabaseClient
+        .from('Reviews')
+        .select('*')
+        .eq('approved', true)
+        .order('created_at', { ascending: false });
+
+      dbReviews = res.data || [];
+      error = res.error || null;
+    } catch (e) {
+      console.error('Error loading reviews', e);
+      error = e;
+    }
+
+    // Combine seeded + DB reviews
+    const allReviews = [...seededReviews, ...dbReviews];
+
+    if (error && dbReviews.length === 0 && seededReviews.length === 0) {
       reviewsListEl.innerHTML = '<div class="col-12 text-muted">Could not load reviews.</div>';
+      avgRatingEl.textContent = '–';
+      avgStarsEl.innerHTML = '';
+      reviewCountEl.textContent = '0';
       return;
     }
 
-    if (!data || data.length === 0) {
+    if (!allReviews.length) {
       reviewsListEl.innerHTML = '<div class="col-12 text-muted">No reviews yet. Be the first to leave one above.</div>';
       avgRatingEl.textContent = '–';
       avgStarsEl.innerHTML = '';
@@ -400,20 +450,28 @@
       return;
     }
 
-    // Summary stats
-    const ratings = data.map(r => r.rating || 0).filter(r => r > 0);
+    // Summary stats (include seeded + db)
+    const ratings = allReviews.map(r => r.rating || 0).filter(r => r > 0);
     const avg = ratings.length ? (ratings.reduce((a,b)=>a+b,0) / ratings.length) : 0;
     avgRatingEl.textContent = avg ? avg.toFixed(1) : '–';
     avgStarsEl.innerHTML = renderStars(Math.round(avg));
-    reviewCountEl.textContent = data.length.toString();
+    reviewCountEl.textContent = allReviews.length.toString();
 
     // List
-    reviewsListEl.innerHTML = data.map(r => {
-      const created = new Date(r.created_at).toLocaleDateString('en-GB', {
-        day: '2-digit', month: 'short', year: 'numeric'
-      });
+    reviewsListEl.innerHTML = allReviews.map(r => {
+      // If it's a DB review, use created_at; if seeded, use created_label
+      let created = '';
+      if (r.created_at) {
+        created = new Date(r.created_at).toLocaleDateString('en-GB', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        });
+      } else if (r.created_label) {
+        created = r.created_label;
+      }
+
       const name = r.name || 'Anonymous';
       const rating = r.rating || 0;
+      const message = r.message || r.body || '';
 
       return `
         <div class="col-md-6">
@@ -425,7 +483,7 @@
               </div>
               <div>${renderStars(rating)}</div>
             </div>
-            <p class="mb-1">${r.message || ''}</p>
+            <p class="mb-1">${message}</p>
           </div>
         </div>
       `;
