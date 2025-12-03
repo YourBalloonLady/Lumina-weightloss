@@ -53,10 +53,37 @@
 <body>
 
 <!-- NAV -->
-<nav class="navbar navbar-dark">
-  <div class="container d-flex justify-content-between">
-    <span class="navbar-brand">🌙 Lumina Admin</span>
-    <button id="logout-btn" class="btn btn-outline-light btn-sm">Logout</button>
+<nav class="navbar navbar-dark navbar-expand-lg">
+  <div class="container">
+    <!-- Brand links back to homepage -->
+    <a class="navbar-brand" href="index.html">
+      🌙 Lumina Admin
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="adminNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Store Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="products.html">Products</a>
+        </li>
+        <!-- If you make a dedicated reviews page later -->
+        <!--
+        <li class="nav-item">
+          <a class="nav-link" href="reviews.html">Reviews Page</a>
+        </li>
+        -->
+      </ul>
+
+      <button id="logout-btn" class="btn btn-outline-light btn-sm">
+        Logout
+      </button>
+    </div>
   </div>
 </nav>
 
