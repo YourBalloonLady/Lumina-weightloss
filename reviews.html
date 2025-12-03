@@ -9,6 +9,33 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+  /* TRUST / DELIVERY BAR */
+#trust-bar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 0;
+  z-index: 1100;
+  text-align: center;
+}
+
+#trust-bar span {
+  white-space: nowrap;
+}
+
+/* move navbar down so it sits under the trust bar */
+.navbar.fixed-top {
+  top: 32px;
+}
+
+/* shift page content down so it doesn't hide under both bars */
+body {
+  padding-top: 80px;
+}
   :root {
     --lw-mint: #22c55e;
     --lw-mint-soft: #ecfdf5;
