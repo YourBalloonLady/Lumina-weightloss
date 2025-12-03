@@ -226,9 +226,14 @@
         <li class="nav-item"><a class="nav-link" href="reviews.html">Reviews</a></li>
         <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
 
-        <!-- Admin (shown only for you on index via Supabase check) -->
-        <li class="nav-item d-none d-lg-block">
+        <!-- Admin (toggled by Supabase auth) -->
+        <li class="nav-item" id="admin-nav-item" style="display:none;">
           <a class="nav-link" href="admin.html">Admin</a>
+        </li>
+
+        <!-- My Account / Login -->
+        <li class="nav-item">
+          <a class="nav-link" href="account.html" id="account-link">My Account</a>
         </li>
 
         <li class="nav-item ms-lg-3">
@@ -317,6 +322,35 @@
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
 
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const ADMIN_EMAIL = "luminaweight@gmail.com";
+  const adminNavItem = document.getElementById('admin-nav-item');
+  const accountLink  = document.getElementById('account-link');
+
+  // Check auth to toggle Admin + My Account/Login text
+  (async () => {
+    try {
+      const { data, error } = await supabaseClient.auth.getUser();
+      const user = data?.user || null;
+
+      if (!error && adminNavItem) {
+        adminNavItem.style.display =
+          user && user.email === ADMIN_EMAIL ? 'block' : 'none';
+      }
+
+      if (accountLink) {
+        if (user) {
+          accountLink.textContent = 'My Account';
+          accountLink.href = 'account.html';
+        } else {
+          accountLink.textContent = 'Login';
+          accountLink.href = 'account.html';
+        }
+      }
+    } catch (e) {
+      console.error('Error checking auth', e);
+    }
+  })();
 </script>
 
 <script>
