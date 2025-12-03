@@ -122,6 +122,7 @@
             <button type="submit" class="btn btn-success btn-lg w-100 mt-4 rounded-pill">
               Confirm order → Payment details
             </button>
+            <div id="checkout-status" class="small text-muted mt-2"></div>
           </form>
         </div>
       </div>
@@ -181,37 +182,85 @@
 
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 </script>
+  
 
 <script>
-// --------------- CART FROM URL ---------------
-function getCart() {
+let cart = [];
+let total = 0;
+
+// ---------- CART / RECOVERY HELPERS ----------
+function getCartFromUrlOrStorage() {
   const params = new URLSearchParams(window.location.search);
-  const data = params.get('cart');
-  if (data) {
-    try { return JSON.parse(decodeURIComponent(data)); }
-    catch(e) { console.error(e); }
+  const urlCart = params.get('cart');
+  if (urlCart) {
+    try {
+      const parsed = JSON.parse(decodeURIComponent(urlCart));
+      localStorage.setItem('cart', JSON.stringify(parsed));
+      return parsed;
+    } catch (e) {
+      console.error('Error parsing cart from URL', e);
+    }
+  }
+  try {
+    const saved = localStorage.getItem('cart');
+    if (saved) return JSON.parse(saved);
+  } catch (e) {
+    console.error('Error reading cart from localStorage', e);
   }
   return [];
 }
 
-const cart = getCart();
-if (cart.length === 0) {
-  alert('Your cart is empty! Taking you back to the shop.');
-  window.location.href = 'index.html';
+async function maybeRecoverCart() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('recover');
+  if (!token) return;
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('AbandonedCheckouts')
+      .select('cart, status')
+      .eq('recovery_token', token)
+      .single();
+
+    if (error) {
+      console.error('Recovery token lookup failed', error);
+      return;
+    }
+
+    if (data && data.cart) {
+      localStorage.setItem('cart', JSON.stringify(data.cart));
+      // Optional: mark as recovered
+      await supabaseClient
+        .from('AbandonedCheckouts')
+        .update({ status: 'recovered' })
+        .eq('recovery_token', token);
+
+      // Clean URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete('recover');
+      url.searchParams.delete('cart');
+      window.history.replaceState({}, '', url.toString());
+    }
+  } catch (e) {
+    console.error('Unexpected recovery error', e);
+  }
 }
 
-const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+function renderOrderSummary() {
+  if (!cart.length) return;
+  total = cart.reduce((s, i) => s + i.price * i.qty, 0);
 
-document.getElementById('order-summary').innerHTML = cart.map(i => `
-  <div class="d-flex justify-content-between py-2 border-bottom">
-    <span>${i.qty} × ${i.name}</span>
-    <span>£${(i.price * i.qty).toFixed(2)}</span>
-  </div>
-`).join('');
-document.getElementById('final-total').textContent = `£${total.toFixed(2)}`;
+  document.getElementById('order-summary').innerHTML = cart.map(i => `
+    <div class="d-flex justify-content-between py-2 border-bottom">
+      <span>${i.qty} × ${i.name}</span>
+      <span>£${(i.price * i.qty).toFixed(2)}</span>
+    </div>
+  `).join('');
+  document.getElementById('final-total').textContent = `£${total.toFixed(2)}`;
+}
 
-// --------------- HELPERS ---------------
 function buildItemsText() {
+  if (!cart.length) return 'No items (cart empty).';
   return cart.map(i => `${i.qty} × ${i.name} — £${(i.price * i.qty).toFixed(2)}`).join('\n');
 }
 
@@ -232,11 +281,19 @@ function clearStoredCart() {
   }
 }
 
-// --------------- SUPABASE ORDER SAVE ---------------
+function createRecoveryToken() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'token_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+function getCartSummaryText() {
+  return buildItemsText();
+}
+
+// ---------- SUPABASE ORDER SAVE ----------
 async function saveOrderToSupabase(details) {
   try {
     const { data, error } = await supabaseClient.auth.getUser();
-
     if (error || !data || !data.user) {
       console.log('No logged-in user, skipping Supabase order save.');
       return;
@@ -264,14 +321,14 @@ async function saveOrderToSupabase(details) {
     };
 
     const { error: insertError } = await supabaseClient
-  .from('Orders')
-  .insert({
-    user_id: user.id,
-    total_amount: total,
-    status: 'Pending',
-    reference: details.ref,
-    details: orderDetails
-  });
+      .from('Orders')
+      .insert({
+        user_id: user.id,
+        total_amount: total,
+        status: 'Pending',
+        reference: details.ref,
+        details: orderDetails
+      });
 
     if (insertError) {
       console.error('Error saving order to Supabase:', insertError);
@@ -283,7 +340,32 @@ async function saveOrderToSupabase(details) {
   }
 }
 
-// --------------- EMAILS ---------------
+// ---------- ABANDONED CHECKOUT SAVE ----------
+async function saveAbandonedCheckout(details, recoveryToken) {
+  try {
+    const { error } = await supabaseClient
+      .from('AbandonedCheckouts')
+      .insert({
+        email: details.email,
+        name: details.name,
+        cart,
+        recovery_token: recoveryToken,
+        status: 'pending',
+        total_amount: total,
+        reference: details.ref
+      });
+
+    if (error) {
+      console.error('Error saving abandoned checkout:', error);
+    } else {
+      console.log('✅ Abandoned checkout saved');
+    }
+  } catch (e) {
+    console.error('Unexpected error saving abandoned checkout', e);
+  }
+}
+
+// ---------- EMAILS ----------
 
 // 📥 ADMIN EMAIL TO YOU – template_juevvvd
 function sendAdminEmail(details) {
@@ -294,7 +376,7 @@ function sendAdminEmail(details) {
     'service_i5zi096',
     'template_juevvvd',
     {
-      to_email: 'luminaweight@gmail.com',        // recipient = you
+      to_email: 'luminaweight@gmail.com',
       customer_name: details.name,
       customer_phone: details.phone,
       customer_address: addressText,
@@ -316,8 +398,8 @@ function sendCustomerEmail(details) {
     'service_i5zi096',
     'template_x5lnd1u',
     {
-      to_email: details.email,                  // main recipient
-      customer_email: details.email,            // spare var if template uses this
+      to_email: details.email,
+      customer_email: details.email,
       customer_name: details.name,
       customer_address: addressText,
       order_reference: details.ref,
@@ -329,9 +411,31 @@ function sendCustomerEmail(details) {
   .catch(err => console.error('❌ Customer email failed', err));
 }
 
-// --------------- FORM SUBMIT ---------------
+// 💌 ABANDONED / RECOVERY EMAIL – template_abandoned_checkout
+function sendAbandonedEmail(details, recoveryLink) {
+  const cartSummary = getCartSummaryText();
+
+  return emailjs.send(
+    'service_i5zi096',
+    'template_abandoned_checkout', // make sure this exists in EmailJS
+    {
+      to_email: details.email,
+      customer_name: details.name || 'there',
+      order_items: cartSummary,
+      recovery_link: recoveryLink
+    }
+  )
+  .then(res => console.log('✅ Abandoned / recovery email sent', res.status))
+  .catch(err => console.error('❌ Abandoned email failed', err));
+}
+
+// ---------- FORM SUBMIT ----------
+const checkoutStatus = document.getElementById('checkout-status');
+
 document.getElementById('addressForm').onsubmit = async function(e) {
   e.preventDefault();
+
+  const btn = this.querySelector('button[type="submit"]');
 
   const name = document.getElementById('fullName').value.trim() || 'Customer';
   const phone = document.getElementById('phone').value.trim();
@@ -341,6 +445,12 @@ document.getElementById('addressForm').onsubmit = async function(e) {
   const city = document.getElementById('city').value.trim();
   const postcode = document.getElementById('postcode').value.trim();
   const ref = 'LW' + Date.now().toString().slice(-6);
+
+  if (!email || !cart.length) {
+    checkoutStatus.textContent = 'Please ensure your cart and email are valid.';
+    checkoutStatus.classList.add('text-danger');
+    return;
+  }
 
   const details = { name, phone, email, address1, address2, city, postcode, ref };
 
@@ -355,23 +465,64 @@ document.getElementById('addressForm').onsubmit = async function(e) {
   document.getElementById('payment-total').textContent = `£${total.toFixed(2)}`;
   document.getElementById('order-ref').textContent = ref;
 
-  // Send emails
-  sendAdminEmail(details);
-  sendCustomerEmail(details);
+  // Abandoned / recovery setup
+  const recoveryToken = createRecoveryToken();
+  const recoveryLink  = `https://luminaweight.xyz/checkout.html?recover=${encodeURIComponent(recoveryToken)}`;
 
-  // Save to Supabase (if user is logged in)
-  await saveOrderToSupabase(details);
+  checkoutStatus.textContent = '';
+  checkoutStatus.classList.remove('text-danger', 'text-success');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
 
-  // Clear cart storage so basket is empty when back on main page
-  clearStoredCart();
+  try {
+    // Save abandoned checkout (so we can recover later)
+    await saveAbandonedCheckout(details, recoveryToken);
 
-  // Show modal
-  new bootstrap.Modal(document.getElementById('paymentModal')).show();
+    // Send abandoned / recovery email
+    await sendAbandonedEmail(details, recoveryLink);
+
+    // Existing emails
+    sendAdminEmail(details);
+    sendCustomerEmail(details);
+
+    // Save order to Supabase if user logged in
+    await saveOrderToSupabase(details);
+
+    // Clear cart storage so basket is empty when back on main page
+    clearStoredCart();
+
+    // Show modal
+    new bootstrap.Modal(document.getElementById('paymentModal')).show();
+
+    checkoutStatus.textContent = 'We’ve emailed your payment instructions and order link.';
+    checkoutStatus.classList.add('text-success');
+  } catch (err) {
+    console.error('Checkout flow error', err);
+    checkoutStatus.textContent = 'There was a problem handling your order. Please try again.';
+    checkoutStatus.classList.add('text-danger');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Confirm order → Payment details';
+  }
 };
 
 function backToShop() {
   window.location.href = 'index.html';
 }
+
+// ---------- INIT ----------
+(async function initCheckout() {
+  await maybeRecoverCart();
+  cart = getCartFromUrlOrStorage();
+
+  if (!cart.length) {
+    alert('Your cart is empty! Taking you back to the shop.');
+    window.location.href = 'index.html';
+    return;
+  }
+
+  renderOrderSummary();
+})();
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
