@@ -335,27 +335,28 @@
     <div id="cart-items" class="p-4" style="min-height: 60vh;">
       <p class="text-center text-muted m-0">Your cart is empty</p>
     </div>
-    <<div class="p-4 border-top bg-light">
-  <!-- Bundle discount row -->
-  <div class="d-flex justify-content-between small mb-1"
-       id="cart-bundle-row"
-       style="display:none;">
-    <span class="fw-semibold">Bundle discount</span>
-    <span id="cart-bundle-amount">-£0.00</span>
-  </div>
-  <div id="cart-bundle-message" class="small text-success mb-2"></div>
+    <div class="p-4 border-top bg-light">
+      <!-- Bundle discount row -->
+      <div class="d-flex justify-content-between small mb-1"
+           id="cart-bundle-row"
+           style="display:none;">
+        <span class="fw-semibold">Bundle discount</span>
+        <span id="cart-bundle-amount">-£0.00</span>
+      </div>
+      <div id="cart-bundle-message" class="small text-success mb-2"></div>
 
-  <!-- Final total -->
-  <div class="d-flex justify-content-between fs-5 mb-3">
-    <span class="fw-semibold">Total:</span>
-    <span id="cart-total" class="fw-bold">£0.00</span>
-  </div>
+      <!-- Final total -->
+      <div class="d-flex justify-content-between fs-5 mb-3">
+        <span class="fw-semibold">Total:</span>
+        <span id="cart-total" class="fw-bold">£0.00</span>
+      </div>
 
-  <button class="btn btn-success w-100 btn-lg rounded-pill" onclick="goToCheckout()">Proceed to Checkout</button>
-  <small class="text-muted d-block mt-2 text-center">
-    Enter delivery details → get payment instructions by email
-  </small>
-</div>
+      <button class="btn btn-success w-100 btn-lg rounded-pill" onclick="goToCheckout()">Proceed to Checkout</button>
+      <small class="text-muted d-block mt-2 text-center">
+        Enter delivery details → get payment instructions by email
+      </small>
+    </div>
+  </div>
 
   <!-- HERO -->
   <section id="home" class="hero text-center">
@@ -572,6 +573,58 @@
   </script>
 
   <script>
+  // ---------- BUNDLE CALCULATOR ----------
+  function calculateBundle(cart) {
+    let vialQty = 0, penQty = 0;
+    let vialTotal = 0, penTotal = 0, otherTotal = 0;
+
+    cart.forEach(item => {
+      const line = (item.price || 0) * (item.qty || 0);
+      const name = (item.name || '').toLowerCase();
+
+      if (name.includes('vial')) {
+        vialQty  += item.qty;
+        vialTotal += line;
+      } else if (name.includes('pen')) {
+        penQty   += item.qty;
+        penTotal += line;
+      } else {
+        otherTotal += line;
+      }
+    });
+
+    const baseTotal = vialTotal + penTotal + otherTotal;
+    let discount = 0;
+    const messages = [];
+
+    // VIAL bundles
+    if (vialQty >= 3) {
+      const d = vialTotal * 0.10; // 10% off vials
+      discount += d;
+      messages.push('10% multi-vial bundle discount applied.');
+    } else if (vialQty === 2) {
+      const d = vialTotal * 0.05; // 5% off vials
+      discount += d;
+      messages.push('5% vial bundle discount applied (2 vials).');
+    }
+
+    // PEN bundles
+    if (penQty >= 2) {
+      const d = penTotal * 0.05; // 5% off pens
+      discount += d;
+      messages.push('5% pen bundle discount applied (2+ pens).');
+    }
+
+    const finalTotal = Math.max(0, baseTotal - discount);
+
+    return {
+      baseTotal,
+      discount,
+      finalTotal,
+      messages
+    };
+  }
+
   // -------- FEATURED PRODUCTS (FROM SUPABASE) --------
   let products = []; // will be filled from Supabase
 
@@ -744,14 +797,21 @@
   }
 
   function updateCart() {
-    const totalItems = cart.reduce((s,i)=>s+i.qty,0);
-    const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const totalItems = cart.reduce((s, i) => s + i.qty, 0);
+
+    // Use bundle calculator
+    const bundle = calculateBundle(cart);
+    const total  = bundle.finalTotal;
+
     document.getElementById('cart-count').textContent = totalItems;
     document.getElementById('cart-items-count').textContent = totalItems;
     document.getElementById('cart-total').textContent = `£${total.toFixed(2)}`;
-    document.getElementById('cart-items').innerHTML = cart.length === 0
-      ? '<p class="text-center text-muted m-0">Your cart is empty</p>'
-      : cart.map((item,i) => `
+
+    const itemsEl = document.getElementById('cart-items');
+    if (!cart.length) {
+      itemsEl.innerHTML = '<p class="text-center text-muted m-0">Your cart is empty</p>';
+    } else {
+      itemsEl.innerHTML = cart.map((item,i) => `
         <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
           <div class="flex-grow-1">
             <strong>${item.name}</strong><br>
@@ -764,6 +824,23 @@
             <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
           </div>
         </div>`).join('');
+    }
+
+    const bundleRow       = document.getElementById('cart-bundle-row');
+    const bundleAmountEl  = document.getElementById('cart-bundle-amount');
+    const bundleMessageEl = document.getElementById('cart-bundle-message');
+
+    if (bundleRow && bundleAmountEl && bundleMessageEl) {
+      if (!cart.length || bundle.discount <= 0) {
+        bundleRow.style.display = 'none';
+        bundleAmountEl.textContent = '-£0.00';
+        bundleMessageEl.textContent = '';
+      } else {
+        bundleRow.style.display = 'flex';
+        bundleAmountEl.textContent = `-£${bundle.discount.toFixed(2)}`;
+        bundleMessageEl.textContent = bundle.messages.join(' ');
+      }
+    }
   }
   updateCart();
 
