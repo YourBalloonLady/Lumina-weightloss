@@ -9,33 +9,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-  /* TRUST / DELIVERY BAR */
-#trust-bar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: linear-gradient(90deg, #22c55e, #16a34a);
-  color: white;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 6px 0;
-  z-index: 1100;
-  text-align: center;
-}
-
-#trust-bar span {
-  white-space: nowrap;
-}
-
-/* move navbar down so it sits under the trust bar */
-.navbar.fixed-top {
-  top: 32px;
-}
-
-/* shift page content down so it doesn't hide under both bars */
-body {
-  padding-top: 80px;
-}
   :root {
     --lw-mint: #22c55e;
     --lw-mint-soft: #ecfdf5;
@@ -46,16 +19,41 @@ body {
     --lw-bg: #f3f4f6;
   }
 
+  /* PAGE BASE */
   body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--lw-bg);
     color: var(--lw-dark);
     margin: 0;
+    /* shift page content down so it doesn't hide under trust bar + navbar */
+    padding-top: 80px;
   }
 
+  /* TRUST / DELIVERY BAR */
+  #trust-bar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 6px 0;
+    z-index: 1100;
+    text-align: center;
+  }
+
+  #trust-bar span {
+    white-space: nowrap;
+  }
+
+  /* NAVBAR */
   .navbar {
     background: #ffffff !important;
     box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+  }
+  .navbar.fixed-top {
+    top: 32px; /* sits just under the trust bar */
   }
   .navbar-brand img {
     height: 36px;
@@ -175,8 +173,7 @@ body {
 </style>
 </head>
 <body>
-  
-  <body>
+
   <!-- TRUST / DELIVERY BAR -->
   <div id="trust-bar">
     <div class="container d-flex justify-content-center gap-4 flex-wrap">
@@ -190,435 +187,430 @@ body {
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
-      ...
+      <a class="navbar-brand d-flex align-items-center" href="index.html#home">
+        <img src="LuminaLogoBlack.png" alt="Lumina Weight Logo">
+        <span>Lumina Weight</span>
+      </a>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg fixed-top">
-  <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="index.html#home">
-      <img src="LuminaLogoBlack.png" alt="Lumina Weight Logo">
-      <span>Lumina Weight</span>
-    </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+          <li class="nav-item"><a class="nav-link" href="index.html#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link active" href="reviews.html">Reviews</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
 
-    <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-        <li class="nav-item"><a class="nav-link" href="index.html#home">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-        <li class="nav-item"><a class="nav-link active" href="reviews.html">Reviews</a></li>
-        <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+          <!-- Admin link (hidden by default) -->
+          <li class="nav-item" id="admin-nav-item" style="display:none;">
+            <a class="nav-link" href="admin.html">Admin</a>
+          </li>
 
-        <!-- Admin link (hidden by default) -->
-        <li class="nav-item" id="admin-nav-item" style="display:none;">
-          <a class="nav-link" href="admin.html">Admin</a>
-        </li>
+          <!-- My Account / Login -->
+          <li class="nav-item">
+            <a class="nav-link" href="account.html" id="account-link">My Account</a>
+          </li>
 
-        <!-- My Account / Login -->
-        <li class="nav-item">
-          <a class="nav-link" href="account.html" id="account-link">My Account</a>
-        </li>
-
-        <li class="nav-item ms-lg-3">
-          <div class="position-relative">
-            <i class="fas fa-shopping-cart cart-icon" onclick="toggleCart()"></i>
-            <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<div class="overlay" onclick="toggleCart()"></div>
-
-<!-- CART SIDEBAR (shares same behaviour as index) -->
-<div class="cart-sidebar" id="cart-sidebar">
-  <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center">
-    <h5 class="mb-0 fw-semibold">Your Cart (<span id="cart-items-count">0</span>)</h5>
-    <button class="btn-close" onclick="toggleCart()"></button>
-  </div>
-  <div id="cart-items" class="p-4" style="min-height: 60vh;">
-    <p class="text-center text-muted m-0">Your cart is empty</p>
-  </div>
-  <div class="p-4 border-top bg-light">
-    <div class="d-flex justify-content-between fs-5 mb-3">
-      <span class="fw-semibold">Total:</span>
-      <span id="cart-total" class="fw-bold">£0.00</span>
-    </div>
-    <button class="btn btn-success w-100 btn-lg rounded-pill" onclick="goToCheckout()">Proceed to Checkout</button>
-    <small class="text-muted d-block mt-2 text-center">Enter delivery details → get payment instructions by email</small>
-  </div>
-</div>
-
-<!-- HERO -->
-<section class="hero-reviews">
-  <div class="container">
-    <div class="hero-eyebrow">
-      <i class="fa-solid fa-comment-dots"></i>
-      Real-world results & experiences
-    </div>
-    <h1 class="hero-title">Client Reviews</h1>
-    <p class="hero-subtitle">
-      Read honest feedback from Lumina clients and share your own experience. 
-      All reviews are checked and approved before they appear here.
-    </p>
-  </div>
-</section>
-
-<!-- MAIN CONTENT -->
-<div class="container my-5">
-  <div class="row g-4">
-    <!-- Stats + summary -->
-    <div class="col-lg-4">
-      <div class="stats-card mb-4">
-        <h2 class="section-title-small mb-2">Overall rating</h2>
-        <div class="d-flex align-items-center mb-2">
-          <span id="avg-rating" class="fs-1 fw-bold me-2">–</span>
-          <div>
-            <div id="avg-stars" class="mb-1"></div>
-            <div class="text-muted small">
-              Based on <span id="review-count">0</span> approved reviews
+          <li class="nav-item ms-lg-3">
+            <div class="position-relative">
+              <i class="fas fa-shopping-cart cart-icon" onclick="toggleCart()"></i>
+              <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
             </div>
-          </div>
-        </div>
-        <span class="badge-rating mt-2 d-inline-flex align-items-center">
-          <i class="fa-solid fa-shield-heart me-1"></i> Verified manually by admin
-        </span>
-      </div>
-
-      <!-- Leave a review -->
-      <div class="form-card">
-        <h2 class="section-title-small mb-2">Leave a review</h2>
-        <p class="text-muted small mb-3">
-          We’ll quickly check your review for spam. Once approved, it will appear on this page.
-        </p>
-        <form id="review-form">
-          <div class="mb-2">
-            <label class="form-label small">Name (optional)</label>
-            <input type="text" id="rev-name" class="form-control" placeholder="First name or initials">
-          </div>
-          <div class="mb-2">
-            <label class="form-label small">Rating</label>
-            <select id="rev-rating" class="form-select" required>
-              <option value="">Select rating…</option>
-              <option value="5">⭐⭐⭐⭐⭐ – Excellent</option>
-              <option value="4">⭐⭐⭐⭐ – Very good</option>
-              <option value="3">⭐⭐⭐ – Good</option>
-              <option value="2">⭐⭐ – Okay</option>
-              <option value="1">⭐ – Poor</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label small">Your experience</label>
-            <textarea id="rev-message" class="form-control" rows="3" minlength="10" maxlength="600" required
-              placeholder="What’s your experience been like with Lumina, the products, and communication?"></textarea>
-          </div>
-          <button type="submit" id="rev-submit" class="btn btn-success w-100 rounded-pill">Submit review</button>
-          <div id="rev-status" class="small text-muted mt-2">
-            Reviews are usually approved within 24 hours.
-          </div>
-        </form>
+          </li>
+        </ul>
       </div>
     </div>
+  </nav>
 
-    <!-- Review list -->
-    <div class="col-lg-8">
-      <div id="reviews-list" class="row g-3">
-        <!-- Filled by JS -->
+  <div class="overlay" onclick="toggleCart()"></div>
+
+  <!-- CART SIDEBAR -->
+  <div class="cart-sidebar" id="cart-sidebar">
+    <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 fw-semibold">Your Cart (<span id="cart-items-count">0</span>)</h5>
+      <button class="btn-close" onclick="toggleCart()"></button>
+    </div>
+    <div id="cart-items" class="p-4" style="min-height: 60vh;">
+      <p class="text-center text-muted m-0">Your cart is empty</p>
+    </div>
+    <div class="p-4 border-top bg-light">
+      <div class="d-flex justify-content-between fs-5 mb-3">
+        <span class="fw-semibold">Total:</span>
+        <span id="cart-total" class="fw-bold">£0.00</span>
       </div>
+      <button class="btn btn-success w-100 btn-lg rounded-pill" onclick="goToCheckout()">Proceed to Checkout</button>
+      <small class="text-muted d-block mt-2 text-center">Enter delivery details → get payment instructions by email</small>
     </div>
   </div>
-</div>
 
-<footer class="text-center">
-  <div class="container">
-    <p class="mb-0">
-      © 2025 Lumina Weight • Premium Weight Loss Peptides • Research Purposes Only • Not For Human Consumption<br>
-      <a href="privacy.html" class="text-decoration-none">Privacy</a> •
-      <a href="shipping.html" class="text-decoration-none">Shipping</a> •
-      <a href="terms.html" class="text-decoration-none">Terms</a> •
-      <a href="disclaimer.html" class="text-decoration-none">Disclaimer</a> •
-      <a href="returns.html" class="text-decoration-none">Returns</a>
-    </p>
-  </div>
-</footer>
+  <!-- HERO -->
+  <section class="hero-reviews">
+    <div class="container">
+      <div class="hero-eyebrow">
+        <i class="fa-solid fa-comment-dots"></i>
+        Real-world results & experiences
+      </div>
+      <h1 class="hero-title">Client Reviews</h1>
+      <p class="hero-subtitle">
+        Read honest feedback from Lumina clients and share your own experience. 
+        All reviews are checked and approved before they appear here.
+      </p>
+    </div>
+  </section>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-
-<script>
-  const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
-
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  const ADMIN_EMAIL = "luminaweight@gmail.com";
-  const adminNavItem = document.getElementById('admin-nav-item');
-  const accountLink  = document.getElementById('account-link');
-
-  // Check auth to toggle Admin + My Account/Login text
-  (async () => {
-    try {
-      const { data, error } = await supabaseClient.auth.getUser();
-      const user = data?.user || null;
-
-      if (!error && adminNavItem) {
-        adminNavItem.style.display =
-          user && user.email === ADMIN_EMAIL ? 'block' : 'none';
-      }
-
-      if (accountLink) {
-        if (user) {
-          accountLink.textContent = 'My Account';
-          accountLink.href = 'account.html';
-        } else {
-          accountLink.textContent = 'Login';
-          accountLink.href = 'account.html';
-        }
-      }
-    } catch (e) {
-      console.error('Error checking auth', e);
-    }
-  })();
-
-  // ------- CART (shared with other pages) -------
-  let cart = [];
-  const savedCart = localStorage.getItem("cart");
-  if (savedCart) {
-    try { cart = JSON.parse(savedCart); } catch(e) { cart = []; }
-  }
-
-  function saveCart() {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }
-
-  function updateCart() {
-    const totalItems = cart.reduce((s,i)=>s+i.qty,0);
-    const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
-    document.getElementById('cart-count').textContent = totalItems;
-    document.getElementById('cart-items-count').textContent = totalItems;
-    document.getElementById('cart-total').textContent = `£${total.toFixed(2)}`;
-    document.getElementById('cart-items').innerHTML = cart.length === 0
-      ? '<p class="text-center text-muted m-0">Your cart is empty</p>'
-      : cart.map((item,i) => `
-        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-          <div class="flex-grow-1">
-            <strong>${item.name}</strong><br>
-            <small>£${item.price} × ${item.qty}</small>
-          </div>
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},-1)">–</button>
-            <span class="fw-bold">${item.qty}</span>
-            <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},1)">+</button>
-            <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
-          </div>
-        </div>`).join('');
-  }
-  updateCart();
-
-  function updateQty(i, delta) {
-    cart[i].qty = Math.max(1, cart[i].qty + delta);
-    updateCart();
-    saveCart();
-  }
-
-  function removeFromCart(i) {
-    cart.splice(i,1);
-    updateCart();
-    saveCart();
-  }
-
-  function toggleCart(force) {
-    const sb = document.getElementById('cart-sidebar');
-    const ov = document.querySelector('.overlay');
-    const open = force !== undefined ? force : !sb.classList.contains('open');
-    sb.classList.toggle('open', open);
-    ov.classList.toggle('show', open);
-  }
-
-  function goToCheckout() {
-    if (cart.length === 0) return alert('Your cart is empty!');
-    const cartData = encodeURIComponent(JSON.stringify(cart));
-    window.location.href = `checkout.html?cart=${cartData}`;
-  }
-
-  window.updateQty = updateQty;
-  window.removeFromCart = removeFromCart;
-  window.toggleCart = toggleCart;
-  window.goToCheckout = goToCheckout;
-
-  // ------- SEEDED REAL REVIEWS (your 5 customers) -------
-  const seededReviews = [
-    {
-      name: "Sarah J., Manchester",
-      rating: 5,
-      message: `Started my research protocol with the 10mg Tirzepatide vial, and Lumina's made it seamless. Discreet packaging arrived in 2 days, no fuss with bank transfer, email instructions were crystal clear. Already noticing better appetite control in my trials; down 1.5 stone in a month. Support team's dosing advice via email was spot on for a newbie. Highly recommend for UK researchers – professional and reliable!`,
-      created_label: "05 Nov 2025"
-    },
-    {
-      name: "Mike T., London",
-      rating: 5,
-      message: `Grabbed a couple of Retatrutide pens for metabolic studies, and the quality is top notch. The guidance email helped nail the weekly dosing. Price point is fair for research grade stuff, and delivery was stealthy as promised. Solid results in glucose regulation data. Lumina's my go to now – efficient and trustworthy.`,
-      created_label: "28 Oct 2025"
-    },
-    {
-      name: "Emma R., Edinburgh",
-      rating: 5,
-      message: `As a busy mum dipping into weight management research, Lumina's been a game changer. Ordered the Tirzepatide 10mg vial, and the once weekly sub-Q setup fits perfectly. Fantastic support, replied to my protocol query in under 24 hours with tailored tips. Packaging was unmarked, and I've hit steady progress (over 2 stone lost). Ethical, UK based, and effective – five stars all day!`,
-      created_label: "05 Sept 2025"
-    },
-    {
-      name: "David K., Birmingham",
-      rating: 5,
-      message: `Switched to Lumina after sketchy overseas suppliers, and wow what a difference. The vials arrived lab fresh, with clear labels and reconstitution notes. Bank transfer was secure and straightforward – no card details needed, which I love for privacy. Early trial data shows strong insulin sensitivity improvements. If you're serious about GLP-1 research, start here – discreet, fast, and legit.`,
-      created_label: "20 Sept 2025"
-    },
-    {
-      name: "Lisa M., Bristol",
-      rating: 5,
-      message: `First-time buyer for Tirzepatide pens, and Lumina exceeded expectations. Super helpful email on starting doses for my bodyweight reduction studies, kept it simple and science-backed. Shipped next day, and the product's purity is evident in the consistent results. Affordable at that price, with zero hassle. Grateful for a UK supplier that's all about quality and support!`,
-      created_label: "10 Nov 2025"
-    }
-  ];
-
-  // ------- LOAD APPROVED REVIEWS -------
-  const reviewsListEl = document.getElementById('reviews-list');
-  const avgRatingEl   = document.getElementById('avg-rating');
-  const avgStarsEl    = document.getElementById('avg-stars');
-  const reviewCountEl = document.getElementById('review-count');
-
-  function renderStars(n) {
-    if (!n || n <= 0) return '';
-    return '★'.repeat(n).split('').map(()=>'<span class="star">★</span>').join('');
-  }
-
-  async function loadReviews() {
-    let dbReviews = [];
-    let error = null;
-
-    try {
-      const res = await supabaseClient
-        .from('Reviews')
-        .select('*')
-        .eq('is_published', true)
-        .order('created_at', { ascending: false });
-
-      dbReviews = res.data || [];
-      error = res.error || null;
-    } catch (e) {
-      console.error('Error loading reviews', e);
-      error = e;
-    }
-
-    // Combine seeded + DB reviews
-    const allReviews = [...seededReviews, ...dbReviews];
-
-    if (error && dbReviews.length === 0 && seededReviews.length === 0) {
-      reviewsListEl.innerHTML = '<div class="col-12 text-muted">Could not load reviews.</div>';
-      avgRatingEl.textContent = '–';
-      avgStarsEl.innerHTML = '';
-      reviewCountEl.textContent = '0';
-      return;
-    }
-
-    if (!allReviews.length) {
-      reviewsListEl.innerHTML = '<div class="col-12 text-muted">No reviews yet. Be the first to leave one above.</div>';
-      avgRatingEl.textContent = '–';
-      avgStarsEl.innerHTML = '';
-      reviewCountEl.textContent = '0';
-      return;
-    }
-
-    // Summary stats (include seeded + db)
-    const ratings = allReviews.map(r => r.rating || 0).filter(r => r > 0);
-    const avg = ratings.length ? (ratings.reduce((a,b)=>a+b,0) / ratings.length) : 0;
-    avgRatingEl.textContent = avg ? avg.toFixed(1) : '–';
-    avgStarsEl.innerHTML = renderStars(Math.round(avg));
-    reviewCountEl.textContent = allReviews.length.toString();
-
-    // List
-    reviewsListEl.innerHTML = allReviews.map(r => {
-      // If it's a DB review, use created_at; if seeded, use created_label
-      let created = '';
-      if (r.created_at) {
-        created = new Date(r.created_at).toLocaleDateString('en-GB', {
-          day: '2-digit', month: 'short', year: 'numeric'
-        });
-      } else if (r.created_label) {
-        created = r.created_label;
-      }
-
-      const name = r.name || r.first_name || 'Anonymous';
-      const rating = r.rating || 0;
-      const message = r.message || r.body || '';
-
-      return `
-        <div class="col-md-6">
-          <div class="review-card">
-            <div class="d-flex justify-content-between mb-1">
-              <div class="review-meta">
-                <strong>${name}</strong><br>
-                <span>${created}</span>
+  <!-- MAIN CONTENT -->
+  <div class="container my-5">
+    <div class="row g-4">
+      <!-- Stats + summary -->
+      <div class="col-lg-4">
+        <div class="stats-card mb-4">
+          <h2 class="section-title-small mb-2">Overall rating</h2>
+          <div class="d-flex align-items-center mb-2">
+            <span id="avg-rating" class="fs-1 fw-bold me-2">–</span>
+            <div>
+              <div id="avg-stars" class="mb-1"></div>
+              <div class="text-muted small">
+                Based on <span id="review-count">0</span> approved reviews
               </div>
-              <div>${renderStars(rating)}</div>
             </div>
-            <p class="mb-1">${message}</p>
           </div>
+          <span class="badge-rating mt-2 d-inline-flex align-items-center">
+            <i class="fa-solid fa-shield-heart me-1"></i> Verified manually by admin
+          </span>
         </div>
-      `;
-    }).join('');
-  }
 
-  loadReviews();
+        <!-- Leave a review -->
+        <div class="form-card">
+          <h2 class="section-title-small mb-2">Leave a review</h2>
+          <p class="text-muted small mb-3">
+            We’ll quickly check your review for spam. Once approved, it will appear on this page.
+          </p>
+          <form id="review-form">
+            <div class="mb-2">
+              <label class="form-label small">Name (optional)</label>
+              <input type="text" id="rev-name" class="form-control" placeholder="First name or initials">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small">Rating</label>
+              <select id="rev-rating" class="form-select" required>
+                <option value="">Select rating…</option>
+                <option value="5">⭐⭐⭐⭐⭐ – Excellent</option>
+                <option value="4">⭐⭐⭐⭐ – Very good</option>
+                <option value="3">⭐⭐⭐ – Good</option>
+                <option value="2">⭐⭐ – Okay</option>
+                <option value="1">⭐ – Poor</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small">Your experience</label>
+              <textarea id="rev-message" class="form-control" rows="3" minlength="10" maxlength="600" required
+                placeholder="What’s your experience been like with Lumina, the products, and communication?"></textarea>
+            </div>
+            <button type="submit" id="rev-submit" class="btn btn-success w-100 rounded-pill">Submit review</button>
+            <div id="rev-status" class="small text-muted mt-2">
+              Reviews are usually approved within 24 hours.
+            </div>
+          </form>
+        </div>
+      </div>
 
-  // ------- SUBMIT REVIEW -------
-  const reviewForm   = document.getElementById('review-form');
-  const revName      = document.getElementById('rev-name');
-  const revRating    = document.getElementById('rev-rating');
-  const revMessage   = document.getElementById('rev-message');
-  const revSubmitBtn = document.getElementById('rev-submit');
-  const revStatus    = document.getElementById('rev-status');
+      <!-- Review list -->
+      <div class="col-lg-8">
+        <div id="reviews-list" class="row g-3">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
 
-  reviewForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  <footer class="text-center">
+    <div class="container">
+      <p class="mb-0">
+        © 2025 Lumina Weight • Premium Weight Loss Peptides • Research Purposes Only • Not For Human Consumption<br>
+        <a href="privacy.html" class="text-decoration-none">Privacy</a> •
+        <a href="shipping.html" class="text-decoration-none">Shipping</a> •
+        <a href="terms.html" class="text-decoration-none">Terms</a> •
+        <a href="disclaimer.html" class="text-decoration-none">Disclaimer</a> •
+        <a href="returns.html" class="text-decoration-none">Returns</a>
+      </p>
+    </div>
+  </footer>
 
-    const name    = revName.value.trim() || null;
-    const rating  = parseInt(revRating.value, 10);
-    const message = revMessage.value.trim();
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    if (!rating || !message) return;
+  <script>
+    const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
 
-    revSubmitBtn.disabled = true;
-    revSubmitBtn.textContent = 'Submitting…';
-    revStatus.textContent = '';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const { error } = await supabaseClient
-      .from('Reviews')
-      .insert({
-        name,
-        rating,
-        message,
-        is_published: false   // goes to admin first
-      });
+    const ADMIN_EMAIL = "luminaweight@gmail.com";
+    const adminNavItem = document.getElementById('admin-nav-item');
+    const accountLink  = document.getElementById('account-link');
 
-    if (error) {
-      console.error('Error submitting review', error);
-      revStatus.textContent = 'Something went wrong submitting your review. Please try again.';
-      revStatus.classList.remove('text-success');
-      revStatus.classList.add('text-danger');
-    } else {
-      reviewForm.reset();
-      revStatus.textContent = 'Thanks! Your review has been submitted for approval.';
-      revStatus.classList.remove('text-danger');
-      revStatus.classList.add('text-success');
+    // Check auth to toggle Admin + My Account/Login text
+    (async () => {
+      try {
+        const { data, error } = await supabaseClient.auth.getUser();
+        const user = data?.user || null;
+
+        if (!error && adminNavItem) {
+          adminNavItem.style.display =
+            user && user.email === ADMIN_EMAIL ? 'block' : 'none';
+        }
+
+        if (accountLink) {
+          if (user) {
+            accountLink.textContent = 'My Account';
+            accountLink.href = 'account.html';
+          } else {
+            accountLink.textContent = 'Login';
+            accountLink.href = 'account.html';
+          }
+        }
+      } catch (e) {
+        console.error('Error checking auth', e);
+      }
+    })();
+
+    // ------- CART (shared with other pages) -------
+    let cart = [];
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      try { cart = JSON.parse(savedCart); } catch(e) { cart = []; }
     }
 
-    revSubmitBtn.disabled = false;
-    revSubmitBtn.textContent = 'Submit review';
-  });
-</script>
+    function saveCart() {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+
+    function updateCart() {
+      const totalItems = cart.reduce((s,i)=>s+i.qty,0);
+      const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+      document.getElementById('cart-count').textContent = totalItems;
+      document.getElementById('cart-items-count').textContent = totalItems;
+      document.getElementById('cart-total').textContent = `£${total.toFixed(2)}`;
+      document.getElementById('cart-items').innerHTML = cart.length === 0
+        ? '<p class="text-center text-muted m-0">Your cart is empty</p>'
+        : cart.map((item,i) => `
+          <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+            <div class="flex-grow-1">
+              <strong>${item.name}</strong><br>
+              <small>£${item.price} × ${item.qty}</small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},-1)">–</button>
+              <span class="fw-bold">${item.qty}</span>
+              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},1)">+</button>
+              <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
+            </div>
+          </div>`).join('');
+    }
+    updateCart();
+
+    function updateQty(i, delta) {
+      cart[i].qty = Math.max(1, cart[i].qty + delta);
+      updateCart();
+      saveCart();
+    }
+
+    function removeFromCart(i) {
+      cart.splice(i,1);
+      updateCart();
+      saveCart();
+    }
+
+    function toggleCart(force) {
+      const sb = document.getElementById('cart-sidebar');
+      const ov = document.querySelector('.overlay');
+      const open = force !== undefined ? force : !sb.classList.contains('open');
+      sb.classList.toggle('open', open);
+      ov.classList.toggle('show', open);
+    }
+
+    function goToCheckout() {
+      if (cart.length === 0) return alert('Your cart is empty!');
+      const cartData = encodeURIComponent(JSON.stringify(cart));
+      window.location.href = `checkout.html?cart=${cartData}`;
+    }
+
+    window.updateQty = updateQty;
+    window.removeFromCart = removeFromCart;
+    window.toggleCart = toggleCart;
+    window.goToCheckout = goToCheckout;
+
+    // ------- SEEDED REAL REVIEWS (your 5 customers) -------
+    const seededReviews = [
+      {
+        name: "Sarah J., Manchester",
+        rating: 5,
+        message: `Started my research protocol with the 10mg Tirzepatide vial, and Lumina's made it seamless. Discreet packaging arrived in 2 days, no fuss with bank transfer, email instructions were crystal clear. Already noticing better appetite control in my trials; down 1.5 stone in a month. Support team's dosing advice via email was spot on for a newbie. Highly recommend for UK researchers – professional and reliable!`,
+        created_label: "05 Nov 2025"
+      },
+      {
+        name: "Mike T., London",
+        rating: 5,
+        message: `Grabbed a couple of Retatrutide pens for metabolic studies, and the quality is top notch. The guidance email helped nail the weekly dosing. Price point is fair for research grade stuff, and delivery was stealthy as promised. Solid results in glucose regulation data. Lumina's my go to now – efficient and trustworthy.`,
+        created_label: "28 Oct 2025"
+      },
+      {
+        name: "Emma R., Edinburgh",
+        rating: 5,
+        message: `As a busy mum dipping into weight management research, Lumina's been a game changer. Ordered the Tirzepatide 10mg vial, and the once weekly sub-Q setup fits perfectly. Fantastic support, replied to my protocol query in under 24 hours with tailored tips. Packaging was unmarked, and I've hit steady progress (over 2 stone lost). Ethical, UK based, and effective – five stars all day!`,
+        created_label: "05 Sept 2025"
+      },
+      {
+        name: "David K., Birmingham",
+        rating: 5,
+        message: `Switched to Lumina after sketchy overseas suppliers, and wow what a difference. The vials arrived lab fresh, with clear labels and reconstitution notes. Bank transfer was secure and straightforward – no card details needed, which I love for privacy. Early trial data shows strong insulin sensitivity improvements. If you're serious about GLP-1 research, start here – discreet, fast, and legit.`,
+        created_label: "20 Sept 2025"
+      },
+      {
+        name: "Lisa M., Bristol",
+        rating: 5,
+        message: `First-time buyer for Tirzepatide pens, and Lumina exceeded expectations. Super helpful email on starting doses for my bodyweight reduction studies, kept it simple and science-backed. Shipped next day, and the product's purity is evident in the consistent results. Affordable at that price, with zero hassle. Grateful for a UK supplier that's all about quality and support!`,
+        created_label: "10 Nov 2025"
+      }
+    ];
+
+    // ------- LOAD APPROVED REVIEWS -------
+    const reviewsListEl = document.getElementById('reviews-list');
+    const avgRatingEl   = document.getElementById('avg-rating');
+    const avgStarsEl    = document.getElementById('avg-stars');
+    const reviewCountEl = document.getElementById('review-count');
+
+    function renderStars(n) {
+      if (!n || n <= 0) return '';
+      return '★'.repeat(n).split('').map(()=>'<span class="star">★</span>').join('');
+    }
+
+    async function loadReviews() {
+      let dbReviews = [];
+      let error = null;
+
+      try {
+        const res = await supabaseClient
+          .from('Reviews')
+          .select('*')
+          .eq('is_published', true)
+          .order('created_at', { ascending: false });
+
+        dbReviews = res.data || [];
+        error = res.error || null;
+      } catch (e) {
+        console.error('Error loading reviews', e);
+        error = e;
+      }
+
+      // Combine seeded + DB reviews
+      const allReviews = [...seededReviews, ...dbReviews];
+
+      if (error && dbReviews.length === 0 && seededReviews.length === 0) {
+        reviewsListEl.innerHTML = '<div class="col-12 text-muted">Could not load reviews.</div>';
+        avgRatingEl.textContent = '–';
+        avgStarsEl.innerHTML = '';
+        reviewCountEl.textContent = '0';
+        return;
+      }
+
+      if (!allReviews.length) {
+        reviewsListEl.innerHTML = '<div class="col-12 text-muted">No reviews yet. Be the first to leave one above.</div>';
+        avgRatingEl.textContent = '–';
+        avgStarsEl.innerHTML = '';
+        reviewCountEl.textContent = '0';
+        return;
+      }
+
+      // Summary stats (include seeded + db)
+      const ratings = allReviews.map(r => r.rating || 0).filter(r => r > 0);
+      const avg = ratings.length ? (ratings.reduce((a,b)=>a+b,0) / ratings.length) : 0;
+      avgRatingEl.textContent = avg ? avg.toFixed(1) : '–';
+      avgStarsEl.innerHTML = renderStars(Math.round(avg));
+      reviewCountEl.textContent = allReviews.length.toString();
+
+      // List
+      reviewsListEl.innerHTML = allReviews.map(r => {
+        // If it's a DB review, use created_at; if seeded, use created_label
+        let created = '';
+        if (r.created_at) {
+          created = new Date(r.created_at).toLocaleDateString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric'
+          });
+        } else if (r.created_label) {
+          created = r.created_label;
+        }
+
+        const name = r.name || r.first_name || 'Anonymous';
+        const rating = r.rating || 0;
+        const message = r.message || r.body || '';
+
+        return `
+          <div class="col-md-6">
+            <div class="review-card">
+              <div class="d-flex justify-content-between mb-1">
+                <div class="review-meta">
+                  <strong>${name}</strong><br>
+                  <span>${created}</span>
+                </div>
+                <div>${renderStars(rating)}</div>
+              </div>
+              <p class="mb-1">${message}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    loadReviews();
+
+    // ------- SUBMIT REVIEW -------
+    const reviewForm   = document.getElementById('review-form');
+    const revName      = document.getElementById('rev-name');
+    const revRating    = document.getElementById('rev-rating');
+    const revMessage   = document.getElementById('rev-message');
+    const revSubmitBtn = document.getElementById('rev-submit');
+    const revStatus    = document.getElementById('rev-status');
+
+    reviewForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name    = revName.value.trim() || null;
+      const rating  = parseInt(revRating.value, 10);
+      const message = revMessage.value.trim();
+
+      if (!rating || !message) return;
+
+      revSubmitBtn.disabled = true;
+      revSubmitBtn.textContent = 'Submitting…';
+      revStatus.textContent = '';
+
+      const { error } = await supabaseClient
+        .from('Reviews')
+        .insert({
+          name,
+          rating,
+          message,
+          is_published: false   // goes to admin first
+        });
+
+      if (error) {
+        console.error('Error submitting review', error);
+        revStatus.textContent = 'Something went wrong submitting your review. Please try again.';
+        revStatus.classList.remove('text-success');
+        revStatus.classList.add('text-danger');
+      } else {
+        reviewForm.reset();
+        revStatus.textContent = 'Thanks! Your review has been submitted for approval.';
+        revStatus.classList.remove('text-danger');
+        revStatus.classList.add('text-success');
+      }
+
+      revSubmitBtn.disabled = false;
+      revSubmitBtn.textContent = 'Submit review';
+    });
+  </script>
 </body>
 </html>
