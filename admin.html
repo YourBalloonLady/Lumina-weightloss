@@ -312,48 +312,51 @@
 
   // ------- REVIEWS MODERATION (PENDING ONLY) -------
 
-  async function loadPendingReviews() {
-    reviewsStatus.textContent = "Loading pending reviews…";
+ // ------- REVIEWS MODERATION (PENDING ONLY) -------
 
-    const { data, error } = await supabaseClient
-      .from("Reviews")
-      .select("*")
-      .eq("is_published", false)
-      .order("created_at", { ascending: false });
+async function loadPendingReviews() {
+  reviewsStatus.textContent = "Loading pending reviews…";
 
-    if (error) {
-      console.error("Error loading reviews", error);
-      reviewsStatus.textContent = "Could not load reviews.";
-      return;
-    }
+  const { data, error } = await supabaseClient
+    .from("Reviews")
+    .select("id, name, rating, message, created_at, is_published")
+    .eq("is_published", false)
+    .order("created_at", { ascending: false });
 
-    if (!data || data.length === 0) {
-      reviewsStatus.textContent = "No pending reviews 🎉";
-      reviewsEl.innerHTML = "";
-      return;
-    }
+  if (error) {
+    console.error("Error loading reviews", error);
+    reviewsStatus.textContent = "Could not load reviews.";
+    return;
+  }
 
-    reviewsStatus.textContent = `${data.length} pending review(s)`;
+  if (!data || data.length === 0) {
+    reviewsStatus.textContent = "No pending reviews 🎉";
+    reviewsEl.innerHTML = "";
+    return;
+  }
 
-    reviewsEl.innerHTML = data
-      .map((review) => {
-        const created = review.created_at
-          ? new Date(review.created_at).toLocaleString()
-          : "";
+  reviewsStatus.textContent = `${data.length} pending review(s)`;
 
-        const stars = review.rating
-          ? "★".repeat(review.rating) + "☆".repeat(5 - review.rating)
-          : "";
+  reviewsEl.innerHTML = data
+    .map((review) => {
+      const created = review.created_at
+        ? new Date(review.created_at).toLocaleString()
+        : "";
 
-        return `
+      const stars = review.rating
+        ? "★".repeat(review.rating) + "☆".repeat(5 - review.rating)
+        : "";
+
+      const name = review.name || "Anonymous";
+      const message = review.message || "";
+
+      return `
         <div class="review-card">
           <div class="d-flex justify-content-between">
             <div>
-              <strong>${review.first_name || "Anonymous"}</strong>
-              ${review.product_name ? `<div class="review-meta">${review.product_name}</div>` : ""}
+              <strong>${name}</strong>
               <div class="my-1">${stars}</div>
-              ${review.title ? `<h6 class="mb-1">${review.title}</h6>` : ""}
-              <p class="mb-1">${review.body || ""}</p>
+              <p class="mb-1">${message}</p>
               <small class="review-meta">${created}</small>
             </div>
             <div class="text-end" style="min-width: 140px;">
@@ -369,26 +372,43 @@
           </div>
         </div>
       `;
-      })
-      .join("");
+    })
+    .join("");
+}
+
+async function publishReview(id) {
+  if (!confirm("Publish this review?")) return;
+
+  const { error } = await supabaseClient
+    .from("Reviews")
+    .update({ is_published: true })
+    .eq("id", id);
+
+  if (error) {
+    console.error("Error publishing review", error);
+    alert("Failed to publish review – check console.");
+    return;
   }
 
-  async function publishReview(id) {
-    if (!confirm("Publish this review?")) return;
+  loadPendingReviews();
+}
 
-    const { error } = await supabaseClient
-      .from("Reviews")
-      .update({ is_published: true })
-      .eq("id", id);
+async function deleteReview(id) {
+  if (!confirm("Delete this review permanently?")) return;
 
-    if (error) {
-      console.error("Error publishing review", error);
-      alert("Failed to publish review – check console.");
-      return;
-    }
+  const { error } = await supabaseClient
+    .from("Reviews")
+    .delete()
+    .eq("id", id);
 
-    loadPendingReviews();
+  if (error) {
+    console.error("Error deleting review", error);
+    alert("Could not delete review – check console.");
+    return;
   }
+
+  loadPendingReviews();
+}
 
   async function deleteReview(id) {
     if (!confirm("Delete this review permanently?")) return;
