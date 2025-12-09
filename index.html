@@ -408,6 +408,18 @@
           </form>
 
           <div id="auth-message" class="mt-3 small text-muted"></div>
+          /* --- FIX NAV ON MOBILE --- */
+@media (max-width: 768px) {
+  /* stop the navbar being fixed on small screens */
+  .navbar.fixed-top {
+    position: static;
+    top: 0;
+  }
+
+  /* only pad for the trust bar on mobile */
+  body {
+    padding-top: 40px; /* just enough for the green bar */
+  }
         </div>
       </div>
     </div>
