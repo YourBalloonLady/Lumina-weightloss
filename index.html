@@ -70,6 +70,18 @@
   #reviews, #contact {padding: 70px 0;}
   .review-card {border-radius: 20px;background: #ffffff;padding: 24px;box-shadow: 0 12px 32px rgba(15,23,42,0.06);}
   footer {background: #020617;color: #9ca3af;padding: 22px 0;font-size: 0.9rem;}
+                       /* --- FIX NAV ON MOBILE --- */
+@media (max-width: 768px) {
+  /* stop the navbar being fixed on small screens */
+  .navbar.fixed-top {
+    position: static;
+    top: 0;
+  }
+
+  /* only pad for the trust bar on mobile */
+  body {
+    padding-top: 40px; /* just enough for the green bar */
+  }
 </style>
 </head>
   <!-- FAQ MODAL -->
@@ -182,18 +194,7 @@
             <div class="position-relative">
               <i class="fas fa-shopping-cart cart-icon" onclick="toggleCart()"></i>
               <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-                        /* --- FIX NAV ON MOBILE --- */
-@media (max-width: 768px) {
-  /* stop the navbar being fixed on small screens */
-  .navbar.fixed-top {
-    position: static;
-    top: 0;
-  }
 
-  /* only pad for the trust bar on mobile */
-  body {
-    padding-top: 40px; /* just enough for the green bar */
-  }
             </div>
           </li>
         </ul>
