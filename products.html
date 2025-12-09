@@ -68,6 +68,29 @@
     .navbar.fixed-top {
       top: 32px; /* sit just under trust bar */
     }
+     /* desktop: fixed nav under trust bar */
+  .navbar.fixed-top {
+    top: 32px;
+  }
+
+  /* desktop only – keep nav fixed */
+  @media (min-width: 769px) {
+    .navbar.fixed-top {
+      position: fixed;
+      left: 0;
+      right: 0;
+    }
+
+    body {
+      padding-top: 80px; /* space for trust bar + nav */
+
+  }
+
+  /* mobile: no fixed elements, everything scrolls */
+  @media (max-width: 768px) {
+    #trust-bar {
+      position: static;
+    }
     .navbar-brand img {
       height: 36px;
       margin-right: 10px;
