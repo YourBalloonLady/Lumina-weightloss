@@ -401,7 +401,7 @@
 
     const user = sessionData.session.user;
 
-    if (user.email !== ADMIN_EMAIL) {
+    if ((user.email || "").toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
       warningEl.innerHTML =
         `<div class="alert alert-danger">Access denied.</div>`;
       statusEl.textContent = "Not authorised";
