@@ -16,12 +16,7 @@
     --lw-muted: #64748b;
     --lw-bg: #f3f4f6;
   }
-
-  body {
-    background: var(--lw-bg);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  }
-
+  body { background: var(--lw-bg); font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
   .hero {
     background: radial-gradient(circle at top left, var(--lw-mint-soft), #e0f2fe 40%, var(--lw-purple-soft) 100%);
     color: var(--lw-dark);
@@ -29,39 +24,16 @@
     text-align: center;
   }
   .hero h1 { font-weight: 800; }
-  .hero p {
-    color: var(--lw-muted);
-    max-width: 500px;
-    margin: 0 auto 10px;
-  }
-
-  .btn-outline-light {
-    border-radius: 999px;
-    border-color: rgba(148,163,184,0.6);
-    color: var(--lw-muted);
-  }
-  .btn-outline-light:hover {
-    background: #ffffff;
-    color: var(--lw-dark);
-  }
-
-  .card {
-    border-radius: 24px;
-    border: 0;
-    box-shadow: 0 20px 45px rgba(15,23,42,0.10);
-  }
-
+  .hero p { color: var(--lw-muted); max-width: 500px; margin: 0 auto 10px; }
+  .btn-outline-light { border-radius: 999px; border-color: rgba(148,163,184,0.6); color: var(--lw-muted); }
+  .btn-outline-light:hover { background: #ffffff; color: var(--lw-dark); }
+  .card { border-radius: 24px; border: 0; box-shadow: 0 20px 45px rgba(15,23,42,0.10); }
   .form-control { border-radius: 12px; }
   #final-total { color: #16a34a; }
-
   .modal-content { border-radius: 20px; }
-  .modal-header {
-    background: var(--lw-mint);
-    color: #ffffff;
-  }
+  .modal-header { background: var(--lw-mint); color: #ffffff; }
 </style>
 </head>
-
 <body>
 
 <div class="hero">
@@ -79,7 +51,6 @@
         <div class="card-body p-5">
           <form id="addressForm">
             <h4 class="mb-4 fw-semibold">Delivery address</h4>
-
             <div class="row g-3">
               <div class="col-md-6">
                 <input type="text" class="form-control" id="fullName" placeholder="Full name" required>
@@ -109,7 +80,6 @@
             <h4 class="fw-semibold mb-3">Order summary</h4>
             <div id="order-summary"></div>
 
-            <!-- Bundle info -->
             <div id="bundle-message" class="small text-warning mt-2"></div>
             <div class="d-flex justify-content-between small text-success mt-1" id="bundle-row" style="display:none;">
               <span>Bundle discount</span>
@@ -124,7 +94,6 @@
             <button type="submit" class="btn btn-success btn-lg w-100 mt-4 rounded-pill">
               Confirm order → Payment details
             </button>
-
             <div id="checkout-status" class="small text-muted mt-2"></div>
           </form>
         </div>
@@ -133,7 +102,6 @@
   </div>
 </div>
 
-<!-- PAYMENT MODAL -->
 <div class="modal fade" id="paymentModal" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
@@ -172,18 +140,13 @@
   </div>
 </div>
 
-<!-- libs -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  // EmailJS
-  (function() {
-    try { emailjs.init('uZOuTrBdIAc6AmKjo'); } catch(e){ console.error("EmailJS init failed", e); }
-  })();
+  (function() { emailjs.init('uZOuTrBdIAc6AmKjo'); })();
 
-  // Supabase
   const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -191,7 +154,6 @@
   let cart = [];
   let total = 0;
 
-  // ---------- BUNDLE CALCULATOR ----------
   function calculateBundle(cart) {
     let vialQty = 0, penQty = 0;
     let vialTotal = 0, penTotal = 0, otherTotal = 0;
@@ -199,7 +161,6 @@
     cart.forEach(item => {
       const line = (item.price || 0) * (item.qty || 0);
       const name = (item.name || '').toLowerCase();
-
       if (name.includes('vial')) { vialQty += item.qty; vialTotal += line; }
       else if (name.includes('pen')) { penQty += item.qty; penTotal += line; }
       else { otherTotal += line; }
@@ -209,21 +170,18 @@
     let discount = 0;
     const messages = [];
 
-    if (vialQty >= 3) { discount += vialTotal * 0.10; messages.push('10% multi-vial bundle discount applied.'); }
-    else if (vialQty === 2) { discount += vialTotal * 0.05; messages.push('5% vial bundle discount applied (2 vials).'); }
+    if (vialQty >= 3) { const d = vialTotal * 0.10; discount += d; messages.push('10% multi-vial bundle discount applied.'); }
+    else if (vialQty === 2) { const d = vialTotal * 0.05; discount += d; messages.push('5% vial bundle discount applied (2 vials).'); }
 
-    if (penQty >= 2) { discount += penTotal * 0.05; messages.push('5% pen bundle discount applied (2+ pens).'); }
+    if (penQty >= 2) { const d = penTotal * 0.05; discount += d; messages.push('5% pen bundle discount applied (2+ pens).'); }
 
     const finalTotal = Math.max(0, baseTotal - discount);
-
     return { baseTotal, discount, finalTotal, messages };
   }
 
-  // ---------- CART / RECOVERY ----------
   function getCartFromUrlOrStorage() {
     const params = new URLSearchParams(window.location.search);
     const urlCart = params.get('cart');
-
     if (urlCart) {
       try {
         const parsed = JSON.parse(decodeURIComponent(urlCart));
@@ -231,63 +189,28 @@
         return parsed;
       } catch (e) { console.error('Error parsing cart from URL', e); }
     }
-
     try {
       const saved = localStorage.getItem('cart');
       if (saved) return JSON.parse(saved);
     } catch (e) { console.error('Error reading cart from localStorage', e); }
-
     return [];
-  }
-
-  async function maybeRecoverCart() {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('recover');
-    if (!token) return;
-
-    try {
-      const { data, error } = await supabaseClient
-        .from('AbandonedCheckouts')
-        .select('cart, status')
-        .eq('recovery_token', token)
-        .single();
-
-      if (error) { console.error('Recovery token lookup failed', error); return; }
-
-      if (data && data.cart) {
-        localStorage.setItem('cart', JSON.stringify(data.cart));
-
-        await supabaseClient
-          .from('AbandonedCheckouts')
-          .update({ status: 'recovered' })
-          .eq('recovery_token', token);
-
-        const url = new URL(window.location.href);
-        url.searchParams.delete('recover');
-        url.searchParams.delete('cart');
-        window.history.replaceState({}, '', url.toString());
-      }
-    } catch (e) {
-      console.error('Unexpected recovery error', e);
-    }
   }
 
   function renderOrderSummary() {
     if (!cart.length) return;
-
     const bundle = calculateBundle(cart);
     total = bundle.finalTotal;
 
-    const summaryEl       = document.getElementById('order-summary');
-    const totalEl         = document.getElementById('final-total');
-    const bundleRow       = document.getElementById('bundle-row');
-    const bundleAmountEl  = document.getElementById('bundle-amount');
+    const summaryEl = document.getElementById('order-summary');
+    const totalEl = document.getElementById('final-total');
+    const bundleRow = document.getElementById('bundle-row');
+    const bundleAmountEl = document.getElementById('bundle-amount');
     const bundleMessageEl = document.getElementById('bundle-message');
 
     summaryEl.innerHTML = cart.map(i => `
       <div class="d-flex justify-content-between py-2 border-bottom">
         <span>${i.qty} × ${i.name}</span>
-        <span>£${(i.price * i.qty).toFixed(2)}</span>
+        <span>£${(Number(i.price||0) * Number(i.qty||0)).toFixed(2)}</span>
       </div>
     `).join('');
 
@@ -300,187 +223,150 @@
       bundleAmountEl.textContent = '-£0.00';
       bundleMessageEl.textContent = '';
     }
-
     totalEl.textContent = `£${bundle.finalTotal.toFixed(2)}`;
   }
 
   function buildItemsText() {
     if (!cart.length) return 'No items (cart empty).';
-    return cart.map(i => `${i.qty} × ${i.name} — £${(i.price * i.qty).toFixed(2)}`).join('\n');
+    return cart.map(i => `${i.qty} × ${i.name} — £${(Number(i.price||0) * Number(i.qty||0)).toFixed(2)}`).join('\n');
   }
 
   function buildAddressText(details) {
-    return [details.address1, details.address2, details.city, details.postcode]
-      .filter(Boolean)
-      .join('\n');
+    return [details.address1, details.address2, details.city, details.postcode].filter(Boolean).join('\n');
   }
 
   function clearStoredCart() {
-    try { localStorage.removeItem('cart'); } catch (e) { console.warn('Could not clear localStorage cart', e); }
+    try { localStorage.removeItem('cart'); } catch (e) {}
   }
 
-  function createRecoveryToken() {
-    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-    return 'token_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
-  }
-
-  // ---------- SUPABASE: SAVE ORDER (GUEST + LOGGED-IN) ----------
-  async function saveOrderToSupabase(details) {
-    try {
-      // optional user_id
-      let userId = null;
-      try {
-        const { data: userData } = await supabaseClient.auth.getUser();
-        userId = userData?.user?.id || null;
-      } catch (e) { userId = null; }
-
-      const orderDetails = {
-        customer: {
-          name: details.name,
-          email: details.email,
-          phone: details.phone,
-          address1: details.address1,
-          address2: details.address2,
-          city: details.city,
-          postcode: details.postcode
-        },
-        items: cart.map(i => ({
-          name: i.name,
-          qty: i.qty,
-          price_each: i.price,
-          line_total: i.price * i.qty
-        })),
-        reference: details.ref
-      };
-
-      const payload = {
-        user_id: userId,          // null allowed for guest
-        total_amount: total,
-        status: 'Pending',
-        reference: details.ref,
-        details: orderDetails
-      };
-
-      const { error } = await supabaseClient.from('Orders').insert(payload);
-      if (error) {
-        console.error('❌ Order insert failed:', error);
-        return { ok: false, error };
-      }
-
-      console.log('✅ Order saved to Supabase');
-      return { ok: true };
-    } catch (err) {
-      console.error('Unexpected error saving order:', err);
-      return { ok: false, error: err };
-    }
-  }
-
-  // ---------- SUPABASE: STOCK DEDUCT (expects Products.name + Products.stock) ----------
-  async function deductStockForCart() {
-    // Best-effort. If your Products table/columns differ, tell me the exact column names and I’ll adjust.
-    for (const item of cart) {
+  // --- STOCK DEDUCTION ---
+  async function deductStockForCart(cartItems) {
+    // IMPORTANT: this relies on Products being updateable from client (your Products table currently shows "RLS disabled")
+    for (const item of cartItems) {
       const qty = Number(item.qty || 0);
-      const name = (item.name || '').trim();
-      if (!qty || !name) continue;
+      if (!qty || qty <= 0) continue;
 
-      try {
-        // find product by name
-        const { data: product, error: findErr } = await supabaseClient
+      // Prefer id
+      if (item.id) {
+        const { data: row, error: getErr } = await supabaseClient
+          .from('Products')
+          .select('id, stock')
+          .eq('id', item.id)
+          .single();
+
+        if (getErr) { console.error('Stock fetch failed', getErr); continue; }
+
+        const current = Number(row.stock || 0);
+        const next = Math.max(0, current - qty);
+
+        const { error: upErr } = await supabaseClient
+          .from('Products')
+          .update({ stock: next })
+          .eq('id', item.id);
+
+        if (upErr) console.error('Stock update failed', upErr);
+      } else {
+        // Fallback for legacy cart items without id (not ideal)
+        const { data: rows, error: findErr } = await supabaseClient
           .from('Products')
           .select('id, stock, name')
-          .eq('name', name)
-          .maybeSingle();
+          .ilike('name', item.name)
+          .limit(1);
 
-        if (findErr) { console.warn('Stock lookup error for', name, findErr); continue; }
-        if (!product || typeof product.stock !== 'number') { console.warn('No product/stock found for', name); continue; }
+        if (findErr || !rows?.length) { console.warn('Could not match product by name:', item.name); continue; }
 
-        const newStock = Math.max(0, product.stock - qty);
+        const row = rows[0];
+        const current = Number(row.stock || 0);
+        const next = Math.max(0, current - qty);
 
-        const { error: updErr } = await supabaseClient
+        const { error: upErr } = await supabaseClient
           .from('Products')
-          .update({ stock: newStock })
-          .eq('id', product.id);
+          .update({ stock: next })
+          .eq('id', row.id);
 
-        if (updErr) console.warn('Stock update failed for', name, updErr);
-        else console.log(`✅ Stock updated: ${name} ${product.stock} → ${newStock}`);
-      } catch (e) {
-        console.warn('Stock deduction unexpected error for', name, e);
+        if (upErr) console.error('Stock update failed (name fallback)', upErr);
       }
     }
   }
 
-  // ---------- ABANDONED CHECKOUT SAVE ----------
-  async function saveAbandonedCheckout(details, recoveryToken) {
+  // --- ORDER SAVE (FIXED: ONLY REAL COLUMNS) ---
+  async function saveOrderToSupabase(details) {
+    let userId = null;
     try {
-      const { error } = await supabaseClient
-        .from('AbandonedCheckouts')
-        .insert({
-          email: details.email,
-          name: details.name,
-          cart,
-          recovery_token: recoveryToken,
-          status: 'pending',
-          total_amount: total,
-          reference: details.ref
-        });
+      const { data } = await supabaseClient.auth.getUser();
+      userId = data?.user?.id || null;
+    } catch (e) { userId = null; }
 
-      if (error) console.error('Error saving abandoned checkout:', error);
-      else console.log('✅ Abandoned checkout saved');
-    } catch (e) {
-      console.error('Unexpected error saving abandoned checkout', e);
+    const orderDetails = {
+      customer: {
+        name: details.name,
+        email: details.email,
+        phone: details.phone,
+        address1: details.address1,
+        address2: details.address2,
+        city: details.city,
+        postcode: details.postcode
+      },
+      items: cart.map(i => ({
+        id: i.id || null,
+        name: i.name,
+        qty: i.qty,
+        price_each: i.price,
+        line_total: Number(i.price||0) * Number(i.qty||0)
+      })),
+      reference: details.ref
+    };
+
+    const payload = {
+      user_id: userId,              // ok null for guest (if column allows)
+      total_amount: total,
+      status: 'Pending',
+      reference: details.ref,
+      details: orderDetails
+    };
+
+    const { error } = await supabaseClient
+      .from('Orders')
+      .insert(payload);
+
+    if (error) {
+      console.error('❌ Orders insert failed:', error);
+      throw error;
     }
+    console.log('✅ Order saved to Supabase');
   }
 
   // ---------- EMAILS ----------
   function sendAdminEmail(details) {
-    const itemsText = buildItemsText();
-    const addressText = buildAddressText(details);
-
-    return emailjs.send('service_i5zi096', 'template_juevvvd', {
+    emailjs.send('service_i5zi096', 'template_juevvvd', {
       to_email: 'luminaweight@gmail.com',
       customer_name: details.name,
       customer_phone: details.phone,
-      customer_address: addressText,
+      customer_address: buildAddressText(details),
       order_reference: details.ref,
-      order_items: itemsText,
+      order_items: buildItemsText(),
       order_total: `£${total.toFixed(2)}`
-    });
+    }).catch(err => console.error('❌ Admin email failed', err));
   }
 
   function sendCustomerEmail(details) {
-    const itemsText = buildItemsText();
-    const addressText = buildAddressText(details);
-
-    return emailjs.send('service_i5zi096', 'template_x5lnd1u', {
+    emailjs.send('service_i5zi096', 'template_x5lnd1u', {
       to_email: details.email,
       customer_email: details.email,
       customer_name: details.name,
-      customer_address: addressText,
+      customer_address: buildAddressText(details),
       order_reference: details.ref,
-      order_items: itemsText,
+      order_items: buildItemsText(),
       order_total: `£${total.toFixed(2)}`
-    });
+    }).catch(err => console.error('❌ Customer email failed', err));
   }
 
-  function sendAbandonedEmail(details, recoveryLink) {
-    const cartSummary = buildItemsText();
-
-    return emailjs.send('service_i5zi096', 'template_guh3ord', {
-      to_email: details.email,
-      customer_name: details.name || 'there',
-      order_items: cartSummary,
-      recovery_link: recoveryLink
-    });
-  }
-
-  // ---------- FORM SUBMIT ----------
   const checkoutStatus = document.getElementById('checkout-status');
 
   document.getElementById('addressForm').onsubmit = async function(e) {
     e.preventDefault();
 
     const btn = this.querySelector('button[type="submit"]');
-
     const name = document.getElementById('fullName').value.trim() || 'Customer';
     const phone = document.getElementById('phone').value.trim();
     const email = document.getElementById('email').value.trim();
@@ -492,22 +378,20 @@
 
     if (!email || !cart.length) {
       checkoutStatus.textContent = 'Please ensure your cart and email are valid.';
-      checkoutStatus.className = 'small mt-2 text-danger';
+      checkoutStatus.classList.add('text-danger');
       return;
     }
 
-    // final totals
     const bundle = calculateBundle(cart);
     total = bundle.finalTotal;
 
     const details = { name, phone, email, address1, address2, city, postcode, ref };
 
-    // Fill modal
     document.getElementById('customerName').textContent = name;
     document.getElementById('payment-summary').innerHTML = cart.map(i => `
       <div class="d-flex justify-content-between">
         <span>${i.qty} × ${i.name}</span>
-        <span>£${(i.price*i.qty).toFixed(2)}</span>
+        <span>£${(Number(i.price||0)*Number(i.qty||0)).toFixed(2)}</span>
       </div>
     `).join('');
     document.getElementById('payment-total').textContent = `£${total.toFixed(2)}`;
@@ -523,73 +407,49 @@
 
     document.getElementById('order-ref').textContent = ref;
 
-    // recovery
-    const recoveryToken = createRecoveryToken();
-    const recoveryLink  = `https://luminaweight.xyz/checkout.html?recover=${encodeURIComponent(recoveryToken)}`;
-
     checkoutStatus.textContent = '';
-    checkoutStatus.className = 'small mt-2 text-muted';
-
+    checkoutStatus.classList.remove('text-danger', 'text-success');
     btn.disabled = true;
     btn.textContent = 'Processing...';
 
     try {
-      // Save abandoned first
-      await saveAbandonedCheckout(details, recoveryToken);
+      // 1) Save order (this is what was failing)
+      await saveOrderToSupabase(details);
 
-      // Save order to Supabase (THIS is the key fix)
-      const saved = await saveOrderToSupabase(details);
-      if (!saved.ok) {
-        checkoutStatus.textContent = 'Order could not be saved. Check console + Supabase RLS/policies.';
-        checkoutStatus.className = 'small mt-2 text-danger';
-        return;
-      }
+      // 2) Deduct stock
+      await deductStockForCart(cart);
 
-      // Deduct stock (best-effort)
-      await deductStockForCart();
+      // 3) Emails
+      sendAdminEmail(details);
+      sendCustomerEmail(details);
 
-      // Emails (don’t block success if email fails)
-      sendAbandonedEmail(details, recoveryLink).catch(err => console.warn('Abandoned email failed', err));
-      sendAdminEmail(details).then(() => console.log('✅ Admin email sent')).catch(err => console.warn('Admin email failed', err));
-      sendCustomerEmail(details).then(() => console.log('✅ Customer email sent')).catch(err => console.warn('Customer email failed', err));
-
-      // Clear cart
+      // 4) Clear cart
       clearStoredCart();
 
-      // Show modal
       new bootstrap.Modal(document.getElementById('paymentModal')).show();
-
-      checkoutStatus.textContent = 'Order saved ✅ Check admin panel. Payment instructions sent.';
-      checkoutStatus.className = 'small mt-2 text-success';
-
+      checkoutStatus.textContent = 'Order saved + stock updated. Check your email for payment instructions.';
+      checkoutStatus.classList.add('text-success');
     } catch (err) {
       console.error('Checkout flow error', err);
-      checkoutStatus.textContent = 'There was a problem handling your order. Please try again.';
-      checkoutStatus.className = 'small mt-2 text-danger';
+      checkoutStatus.textContent = 'Order failed to save (check console + Supabase policies).';
+      checkoutStatus.classList.add('text-danger');
     } finally {
       btn.disabled = false;
       btn.textContent = 'Confirm order → Payment details';
     }
   };
 
-  function backToShop() {
-    window.location.href = 'index.html';
-  }
+  function backToShop() { window.location.href = 'index.html'; }
 
-  // ---------- INIT ----------
-  (async function initCheckout() {
-    await maybeRecoverCart();
+  (function initCheckout() {
     cart = getCartFromUrlOrStorage();
-
     if (!cart.length) {
       alert('Your cart is empty! Taking you back to the shop.');
       window.location.href = 'index.html';
       return;
     }
-
     renderOrderSummary();
   })();
 </script>
-
 </body>
 </html>
