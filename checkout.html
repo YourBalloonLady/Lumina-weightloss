@@ -621,15 +621,15 @@ document.getElementById('addressForm').onsubmit = async function(e) {
   // 3. Save abandoned checkout for recovery tracking
   await saveAbandonedCheckout(details, recoveryToken);
 
-  // 3. Send all emails
+  // 4. Send all emails
   sendAdminEmail(details);
   sendCustomerEmail(details);
   await sendAbandonedEmail(details, recoveryLink);
 
-  // 4. Clear cart
+  // 5. Clear cart
   clearStoredCart();
 
-  // 5. Show success modal
+  // 6. Show success modal
   new bootstrap.Modal(document.getElementById('paymentModal')).show();
 
   checkoutStatus.textContent = "We've emailed your payment instructions and order link.";
