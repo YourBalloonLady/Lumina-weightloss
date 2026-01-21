@@ -198,6 +198,32 @@
     });
   }
 
+  // ---------- EMAIL: PAYMENT RECEIVED ----------
+  function sendPaidEmail(order) {
+    if (!order || !window.emailjs) return;
+
+    const customer = order.details?.customer || {};
+    const toEmail = customer.email || order.customer_email || order.email || "";
+    const customerName = customer.name || order.customer_name || order.name || "Customer";
+
+    if (!toEmail) {
+      alert("No email found on this order.");
+      return;
+    }
+
+    const ref = order.reference || order.id;
+    const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
+
+    // IMPORTANT: template variables must be:
+    // {{customer_name}} {{order_ref}} {{order_total}} {{email}}
+    return emailjs.send("service_i5zi096", "template_paid", {
+      email: toEmail,
+      customer_name: customerName,
+      order_ref: ref,
+      order_total: total
+    });
+  }
+
   // ---------- BUTTON HANDLERS (manual send) ----------
   async function sendShippedEmailById(orderId) {
     const order = ordersCache[orderId];
@@ -222,10 +248,43 @@
 
     try {
       await sendCancelledEmail(order);
-      alert("Cancelled email sent ❌");
+      alert("Cancelled email sent ✅");
     } catch (e) {
       console.error("Cancelled email failed", e);
       alert("Cancelled email failed — check console");
+    }
+  }
+
+  // NEW: mark paid + send payment email (one click)
+  async function markPaidAndSendById(orderId) {
+    const order = ordersCache[orderId];
+    if (!order) return alert("Order not found.");
+
+    if (!confirm("Confirm PAYMENT RECEIVED and email customer?")) return;
+
+    try {
+      // 1) Send email
+      await sendPaidEmail(order);
+
+      // 2) Update status to Paid
+      const { error } = await supabaseClient
+        .from("Orders")
+        .update({ status: "Paid" })
+        .eq("id", orderId);
+
+      if (error) {
+        console.error("Failed to update order to Paid", error);
+        alert("Email sent, but status update failed — check Supabase policies.");
+        return;
+      }
+
+      // update cache + refresh UI
+      ordersCache[orderId].status = "Paid";
+      alert("Payment received email sent 💷✅");
+      loadOrders();
+    } catch (e) {
+      console.error("Payment email failed", e);
+      alert("Payment email failed — check console");
     }
   }
 
@@ -244,7 +303,7 @@
 
     if (ordersCache[id]) ordersCache[id].status = value;
 
-    // Optional: refresh UI so badge updates immediately
+    // refresh UI so badge updates immediately
     loadOrders();
   }
 
@@ -288,6 +347,8 @@
         "Customer";
       const total = Number(order.total_amount || 0).toFixed(2);
 
+      const isPaid = (status || "").toLowerCase() === "paid";
+
       return `
         <div class="order-card">
           <div class="d-flex justify-content-between align-items-start">
@@ -297,7 +358,7 @@
               <small>${name} — ${email}</small>
             </div>
 
-            <div class="text-end" style="min-width: 220px;">
+            <div class="text-end" style="min-width: 240px;">
               <div class="mb-1">${badge(status)}</div>
               <div class="fw-bold">£${total}</div>
 
@@ -310,10 +371,17 @@
               </select>
 
               <div class="btn-row">
+                <button class="btn btn-sm btn-success"
+                  ${isPaid ? "disabled" : ""}
+                  onclick="markPaidAndSendById('${order.id}')">
+                  💷 Send Payment Received
+                </button>
+
                 <button class="btn btn-sm btn-primary"
                   onclick="sendShippedEmailById('${order.id}')">
                   📦 Send Shipped Email
                 </button>
+
                 <button class="btn btn-sm btn-danger"
                   onclick="sendCancelledEmailById('${order.id}')">
                   ❌ Send Cancelled Email
@@ -441,6 +509,7 @@
   window.updateStatus = updateStatus;
   window.sendShippedEmailById = sendShippedEmailById;
   window.sendCancelledEmailById = sendCancelledEmailById;
+  window.markPaidAndSendById = markPaidAndSendById;
   window.publishReview = publishReview;
   window.deleteReview = deleteReview;
 
