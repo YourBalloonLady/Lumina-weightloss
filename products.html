@@ -500,15 +500,9 @@
 
     function imgSrc(image){
   if(!image) return '';
-  image = String(image).trim();
 
-  // If it's already a full URL, use it
-  if(/^https?:\/\//i.test(image)) return image;
-
-  // Force local files to site root and encode spaces safely
-  if(!image.startsWith('/')) image = '/' + image;
-
-  return image.split('/').map((seg, idx) => idx === 0 ? '' : encodeURIComponent(seg)).join('/');
+  // Always force image to site root
+  return 'https://luminaweight.co.uk/' + encodeURIComponent(image);
 }
 
     function renderProducts() {
