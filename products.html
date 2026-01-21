@@ -39,7 +39,7 @@
 <nav class="navbar navbar-expand-lg fixed-top">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center" href="index.html">
-      <img src="/LuminaLogoBlack.png">
+      <img src="/LuminaLogoBlack.png" alt="Lumina Weight">
       <strong>Lumina Weight</strong>
     </a>
     <div class="ms-auto">
@@ -74,12 +74,12 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <script>
-/* ---------- IMAGE PATH FIX ---------- */
+/* ---------- IMAGE PATH FIX (FOR .co.uk ROOT FILES) ---------- */
 function imgSrc(image){
   if(!image) return '';
-  if(/^https?:\/\//i.test(image)) return image;
-  if(image.startsWith('/')) return encodeURI(image);
-  return '/' + encodeURI(image);
+  if(/^https?:\/\//i.test(image)) return image;     // full URL stored in DB
+  if(image.startsWith('/')) return encodeURI(image); // already root path
+  return '/' + encodeURI(image);                    // force root path
 }
 
 /* ---------- SUPABASE ---------- */
@@ -89,11 +89,14 @@ const supabaseClient = supabase.createClient(
 );
 
 /* ---------- CART ---------- */
-let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-function saveCart(){ localStorage.setItem('cart',JSON.stringify(cart)); }
+let cart = [];
+try { cart = JSON.parse(localStorage.getItem('cart') || '[]'); } catch(e){ cart = []; }
+
+function saveCart(){ localStorage.setItem('cart', JSON.stringify(cart)); }
+
 function updateCart(){
   document.getElementById('cart-count').textContent =
-    cart.reduce((s,i)=>s+i.qty,0);
+    cart.reduce((s,i)=>s+(Number(i.qty)||0),0);
 }
 updateCart();
 
@@ -108,12 +111,11 @@ function renderProducts(){
   list.innerHTML = products.map((p,i)=>`
     <div class="col-md-3">
       <div class="product-card h-100 p-3" onclick="openModal(${i})">
-        <img src="${imgSrc(p.image)}" class="w-100 mb-3">
+        <img src="${imgSrc(p.image)}" class="w-100 mb-3" alt="${p.name}">
         <h6 class="fw-bold">${p.name}</h6>
-        <p class="text-muted small">Research material — not for human consumption</p>
-        <div class="fw-bold fs-5">£${Number(p.price).toFixed(2)}</div>
-        <button class="btn btn-success w-100 mt-2"
-          ${p.stock===0?'disabled':''}>
+        <p class="text-muted small mb-2">Research material — not for human consumption</p>
+        <div class="fw-bold fs-5">£${Number(p.price || 0).toFixed(2)}</div>
+        <button class="btn btn-success w-100 mt-2" ${p.stock===0?'disabled':''}>
           ${p.stock>0?'Add to cart':'Out of stock'}
         </button>
       </div>
@@ -128,21 +130,33 @@ async function loadProducts(){
     .order('name',{ascending:true});
 
   if(error){
+    console.error(error);
     document.getElementById('all-products-status').textContent = 'Failed to load products';
     return;
   }
 
-  products = data;
+  // normalise image + numbers so render is safe
+  products = (data || []).map(p => ({
+    id: p.id,
+    name: p.name,
+    price: Number(p.price || 0),
+    image: p.image || '',
+    stock: Number(p.stock ?? 0)
+  }));
+
   renderProducts();
 }
 loadProducts();
 
-/* ---------- MODAL ---------- */
+/* ---------- “ADD TO CART” ---------- */
 function openModal(i){
   const p = products[i];
   if(!p || p.stock===0) return;
 
-  cart.push({id:p.id,name:p.name,price:p.price,qty:1,image:p.image});
+  const existing = cart.find(x => x.id === p.id);
+  if(existing) existing.qty += 1;
+  else cart.push({ id:p.id, name:p.name, price:p.price, qty:1, image:p.image });
+
   saveCart();
   updateCart();
   alert(p.name + ' added to cart');
