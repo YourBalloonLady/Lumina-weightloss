@@ -451,15 +451,13 @@
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
   <!-- SUPABASE -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script>
-    const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  </script>
+<script>
+  const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  
   // -------- FEATURED PRODUCTS (FROM SUPABASE) --------
   let products = []; // will be filled from Supabase
 
@@ -567,7 +565,6 @@
     modalPrice.textContent = `£${currentProduct.price}`;
     modalStock.innerHTML   = `In stock – ${currentProduct.stock} units`;
 
-    // Neutral, bank-safe description (no outcomes, no usage, no dosing)
     descEl.innerHTML = `
       <p><strong>Research use only.</strong> This product is supplied strictly for laboratory research purposes.</p>
       <p>Not a medicine. Not a supplement. <strong>Not for human consumption.</strong></p>
@@ -614,33 +611,33 @@
   }
 
   function updateCart() {
-  const totalItems = cart.reduce((s, i) => s + i.qty, 0);
-  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+    const totalItems = cart.reduce((s, i) => s + i.qty, 0);
+    const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
 
-  document.getElementById('cart-count').textContent = totalItems;
-  document.getElementById('cart-items-count').textContent = totalItems;
-  document.getElementById('cart-total').textContent = `£${total.toFixed(2)}`;
+    document.getElementById('cart-count').textContent = totalItems;
+    document.getElementById('cart-items-count').textContent = totalItems;
+    document.getElementById('cart-total').textContent = `£${total.toFixed(2)}`;
 
-  const itemsEl = document.getElementById('cart-items');
-  if (!cart.length) {
-    itemsEl.innerHTML = '<p class="text-center text-muted m-0">Your cart is empty</p>';
-  } else {
-    itemsEl.innerHTML = cart.map((item,i) => `
-      <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-        <div class="flex-grow-1">
-          <strong>${item.name}</strong><br>
-          <small>£${item.price} × ${item.qty}</small>
+    const itemsEl = document.getElementById('cart-items');
+    if (!cart.length) {
+      itemsEl.innerHTML = '<p class="text-center text-muted m-0">Your cart is empty</p>';
+    } else {
+      itemsEl.innerHTML = cart.map((item,i) => `
+        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+          <div class="flex-grow-1">
+            <strong>${item.name}</strong><br>
+            <small>£${item.price} × ${item.qty}</small>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},-1)">–</button>
+            <span class="fw-bold">${item.qty}</span>
+            <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},1)">+</button>
+            <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
+          </div>
         </div>
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},-1)">–</button>
-          <span class="fw-bold">${item.qty}</span>
-          <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},1)">+</button>
-          <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
-        </div>
-      </div>
-    `).join('');
+      `).join('');
+    }
   }
-}
 
   updateCart();
 
@@ -659,9 +656,7 @@
   }
 
   // -------- QUICK MESSAGE (EmailJS) --------
-  (function () {
-    emailjs.init('uZOuTrBdIAc6AmKjo');
-  })();
+  (function () { emailjs.init('uZOuTrBdIAc6AmKjo'); })();
 
   const qmForm   = document.getElementById('quickMessageForm');
   const qmBtn    = document.getElementById('qm-button');
@@ -680,19 +675,15 @@
       qmBtn.textContent = 'Sending...';
       qmStatus.textContent = '';
 
-      emailjs.send(
-        'service_i5zi096',
-        'template_x5lnd1u',
-        {
-          to_email: 'luminaweight@gmail.com',
-          customer_name: name,
-          customer_phone: email,
-          customer_address: 'Quick Message (No Address)',
-          order_reference: 'ENQUIRY-' + Date.now().toString().slice(-5),
-          order_items: message,
-          order_total: 'N/A'
-        }
-      ).then(() => {
+      emailjs.send('service_i5zi096','template_x5lnd1u', {
+        to_email: 'luminaweight@gmail.com',
+        customer_name: name,
+        customer_phone: email,
+        customer_address: 'Quick Message (No Address)',
+        order_reference: 'ENQUIRY-' + Date.now().toString().slice(-5),
+        order_items: message,
+        order_total: 'N/A'
+      }).then(() => {
         qmStatus.textContent = 'Thanks! Your message has been sent.';
         qmForm.reset();
       }).catch(() => {
@@ -710,7 +701,7 @@
 
   async function updateAccountLink() {
     if (!accountLink) return;
-    const { data, error } = await supabaseClient.auth.getUser();
+    const { data } = await supabaseClient.auth.getUser();
 
     if (data && data.user) {
       accountLink.textContent = 'My Account';
@@ -736,7 +727,7 @@
       const email = document.getElementById('signup-email').value;
       const password = document.getElementById('signup-password').value;
 
-      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+      const { error } = await supabaseClient.auth.signUp({ email, password });
 
       if (error) {
         authMessage.textContent = error.message;
@@ -758,7 +749,7 @@
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
 
-      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
       if (error) {
         authMessage.textContent = error.message;
@@ -766,7 +757,7 @@
       } else {
         authMessage.textContent = 'Logged in successfully.';
         authMessage.classList.add('text-success');
-        setTimeout(() => window.location.reload(), 800);
+        setTimeout(() => window.location.reload(), 600);
       }
     });
   }
@@ -777,17 +768,15 @@
 
   (async () => {
     try {
-      const { data, error } = await supabaseClient.auth.getUser();
+      const { data } = await supabaseClient.auth.getUser();
       const user = data?.user || null;
-
-      if (!error && adminNavItem) {
-        adminNavItem.style.display =
-          user && user.email === ADMIN_EMAIL ? 'block' : 'none';
+      if (adminNavItem) {
+        adminNavItem.style.display = (user && user.email === ADMIN_EMAIL) ? 'block' : 'none';
       }
     } catch (e) {
       console.error('Error checking admin user', e);
     }
   })();
-  </script>
+</script>
 </body>
 </html>
