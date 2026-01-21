@@ -258,14 +258,7 @@
       <p class="text-center text-muted m-0">Your cart is empty</p>
     </div>
     <div class="p-4 border-top bg-light">
-      <!-- Bundle discount row -->
-      <div class="d-flex justify-content-between small mb-1"
-           id="cart-bundle-row"
-           style="display:none;">
-        <span class="fw-semibold">Bundle discount</span>
-        <span id="cart-bundle-amount">-£0.00</span>
-      </div>
-      <div id="cart-bundle-message" class="small text-success mb-2"></div>
+      
 
       <!-- Final total -->
       <div class="d-flex justify-content-between fs-5 mb-3">
@@ -466,59 +459,7 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   </script>
 
-  <script>
-  // ---------- BUNDLE CALCULATOR ----------
-  function calculateBundle(cart) {
-    let vialQty = 0, penQty = 0;
-    let vialTotal = 0, penTotal = 0, otherTotal = 0;
-
-    cart.forEach(item => {
-      const line = (item.price || 0) * (item.qty || 0);
-      const name = (item.name || '').toLowerCase();
-
-      if (name.includes('vial')) {
-        vialQty  += item.qty;
-        vialTotal += line;
-      } else if (name.includes('pen')) {
-        penQty   += item.qty;
-        penTotal += line;
-      } else {
-        otherTotal += line;
-      }
-    });
-
-    const baseTotal = vialTotal + penTotal + otherTotal;
-    let discount = 0;
-    const messages = [];
-
-    // VIAL bundles
-    if (vialQty >= 3) {
-      const d = vialTotal * 0.10; // 10% off vials
-      discount += d;
-      messages.push('10% multi-vial bundle discount applied.');
-    } else if (vialQty === 2) {
-      const d = vialTotal * 0.05; // 5% off vials
-      discount += d;
-      messages.push('5% vial bundle discount applied (2 vials).');
-    }
-
-    // PEN bundles
-    if (penQty >= 2) {
-      const d = penTotal * 0.05; // 5% off pens
-      discount += d;
-      messages.push('5% pen bundle discount applied (2+ pens).');
-    }
-
-    const finalTotal = Math.max(0, baseTotal - discount);
-
-    return {
-      baseTotal,
-      discount,
-      finalTotal,
-      messages
-    };
-  }
-
+  
   // -------- FEATURED PRODUCTS (FROM SUPABASE) --------
   let products = []; // will be filled from Supabase
 
