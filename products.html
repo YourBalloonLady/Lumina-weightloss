@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- SEO -->
-  <title>All Tirzepatide & Retatrutide Vials & Pens UK | Lumina Weight</title>
-  <meta name="description" content="Browse all Lumina Weight Tirzepatide & Retatrutide research products in the UK. 10mg–20mg vials and multi-dose pens for metabolic and weight-management studies. Discreet next-day UK dispatch — for laboratory research use only.">
+  <!-- SEO (neutral / research supply language) -->
+  <title>Research Materials Catalogue UK | Lumina Weight</title>
+  <meta name="description" content="Browse all Lumina Weight research materials in the UK. Product formats and quantities available with discreet UK dispatch — for laboratory research use only. Not for human consumption.">
   <meta name="robots" content="index, follow">
 
   <!-- Open Graph / Social -->
-  <meta property="og:title" content="All Tirzepatide & Retatrutide Vials & Pens UK | Lumina Weight">
-  <meta property="og:description" content="Full UK range of Tirzepatide & Retatrutide vials and pens for metabolic and weight-management research. Discreet packaging • Next-day dispatch • Research use only.">
+  <meta property="og:title" content="Research Materials Catalogue UK | Lumina Weight">
+  <meta property="og:description" content="Full UK range of research materials and accessories where applicable. Discreet packaging • UK dispatch • Research use only. Not for human consumption.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://luminaweight.xyz/products.html">
   <meta property="og:image" content="https://luminaweight.xyz/LuminaLogoBlack.png">
@@ -295,12 +295,12 @@
     <div class="container">
       <div class="hero-eyebrow">
         <i class="fa-solid fa-vial-circle-check"></i>
-        Full Tirzepatide & Retatrutide Range
+        Full Research Materials Range
       </div>
       <h1 class="hero-title">All Lumina Products</h1>
       <p class="hero-subtitle">
-        Browse every Tirzepatide and Retatrutide vial and pen option.
-        Mix strengths to match where you are in your protocol right now.
+        Browse every available product format and quantity.
+        All items are supplied strictly for <strong>laboratory research use only</strong> and are <strong>not for human consumption</strong>.
       </p>
     </div>
   </section>
@@ -309,14 +309,14 @@
     <div class="container">
       <div class="text-center mb-4">
         <div class="section-eyebrow">All Product Options</div>
-        <h2 class="section-title">Choose Your Strength & Format</h2>
+        <h2 class="section-title">Choose Your Format</h2>
         <p class="section-subtitle">
-          Select the vial or pen strength that fits your current phase.
+          Select the format that fits your laboratory requirements.
           All products are supplied for <strong>research use only</strong>.
         </p>
         <p class="text-muted small mt-2">
-          <strong>Every pen includes 10 sterile pen heads.</strong><br>
-          <strong>Every vial is supplied pre-reconstituted and includes 10 sterile syringes for laboratory use.</strong>
+          <strong>Where applicable, accessories are supplied for laboratory handling and measurement.</strong><br>
+          <strong>No medical guidance is provided and nothing on this site is intended for human use.</strong>
         </p>
       </div>
 
@@ -332,29 +332,29 @@
     <div class="container">
       <div class="text-center mb-4">
         <div class="section-eyebrow">Support</div>
-        <h2 class="section-title">Guides & Helpful Info</h2>
+        <h2 class="section-title">Shipping, Policies & Documentation</h2>
         <p class="section-subtitle">
-          Learn how our research vials and pens are typically used, how delivery works,
-          and where to read more real-world results. Not medical advice.
+          Helpful information about dispatch, delivery, and site policies.
+          All information is general and for administrative purposes only.
         </p>
       </div>
 
       <div class="row g-4">
         <div class="col-md-3">
           <div class="info-card h-100 text-center">
-            <div class="info-icon mb-3"><i class="fa-solid fa-pen-ruler"></i></div>
-            <h5 class="fw-semibold mb-2">Pen Instructions</h5>
-            <p class="small mb-3">How multi-dose pens are typically prepared and used in research settings, with clear guidance.</p>
-            <a href="pen-instructions.html" class="btn-info-link">Read now</a>
+            <div class="info-icon mb-3"><i class="fa-solid fa-file-lines"></i></div>
+            <h5 class="fw-semibold mb-2">Product Notes</h5>
+            <p class="small mb-3">General product notes and handling reminders for laboratory environments. No medical guidance.</p>
+            <a href="disclaimer.html" class="btn-info-link">Read now</a>
           </div>
         </div>
 
         <div class="col-md-3">
           <div class="info-card h-100 text-center">
-            <div class="info-icon mb-3"><i class="fa-solid fa-syringe"></i></div>
-            <h5 class="fw-semibold mb-2">Dosage Guide</h5>
-            <p class="small mb-3">How many units per mg? Example once-weekly research protocols. For <strong>research calculations only</strong>.</p>
-            <a href="dosage-guide.html" class="btn-info-link">View guide</a>
+            <div class="info-icon mb-3"><i class="fa-solid fa-shield-halved"></i></div>
+            <h5 class="fw-semibold mb-2">Terms & Disclaimer</h5>
+            <p class="small mb-3">Important information about research-only supply, eligibility, and site terms.</p>
+            <a href="terms.html" class="btn-info-link">View terms</a>
           </div>
         </div>
 
@@ -362,7 +362,7 @@
           <div class="info-card h-100 text-center">
             <div class="info-icon mb-3"><i class="fa-regular fa-star"></i></div>
             <h5 class="fw-semibold mb-2">Reviews</h5>
-            <p class="small mb-3">Read how other clients have found the ordering process, shipping speed and support.</p>
+            <p class="small mb-3">Ordering experience, delivery speed, packaging and customer service feedback.</p>
             <a href="reviews.html" class="btn-info-link">Read reviews</a>
           </div>
         </div>
@@ -454,15 +454,13 @@
     }
     updateCart();
 
-    // FIXED: allow qty to hit 0 and remove
+    // allow qty to hit 0 and remove
     function updateQty(i, delta) {
       if (!cart[i]) return;
       const next = (cart[i].qty || 0) + delta;
-      if (next <= 0) {
-        cart.splice(i, 1);
-      } else {
-        cart[i].qty = next;
-      }
+      if (next <= 0) cart.splice(i, 1);
+      else cart[i].qty = next;
+
       updateCart();
       saveCart();
     }
@@ -515,29 +513,31 @@
 
       listEl.innerHTML = products.map((p, i) => {
         const badge = computeBadge(p);
-        const isBlend = (p.name || '').toLowerCase().includes('bpc-157') || (p.name || '').toLowerCase().includes('tb500');
+        const nameLower = (p.name || '').toLowerCase();
+        const isBlend = nameLower.includes('bpc-157') || nameLower.includes('tb500');
 
         const typeLabel = isBlend
-          ? 'RECOVERY PEPTIDE BLEND'
+          ? 'RESEARCH PEPTIDE BLEND'
           : p.name.includes('Retatrutide')
-            ? (p.name.includes('Pen') ? 'RETATRUTIDE PEN' : 'RETATRUTIDE VIAL')
-            : (p.name.includes('Pen') ? 'TIRZEPATIDE PEN' : 'TIRZEPATIDE VIAL');
+            ? (p.name.includes('Pen') ? 'RETATRUTIDE (RESEARCH)' : 'RETATRUTIDE (RESEARCH)')
+            : (p.name.includes('Pen') ? 'TIRZEPATIDE (RESEARCH)' : 'TIRZEPATIDE (RESEARCH)');
 
+        // Neutral descriptions only (no outcomes / dosing / protocol claims)
         const baseDesc = isBlend
-          ? 'BPC-157 + TB500 research blend commonly used in recovery, tendon/ligament and tissue-repair studies.'
+          ? 'A research peptide blend supplied for controlled laboratory study.'
           : p.name.includes('Tirzepatide')
-            ? 'Dual GIP/GLP-1 research agonist for appetite and glucose control.'
+            ? 'A research material supplied for controlled laboratory study.'
             : p.name.includes('Retatrutide')
-              ? 'Multi-receptor research agonist for aggressive weight management.'
-              : 'Research peptide product.';
+              ? 'A research material supplied for controlled laboratory study.'
+              : 'Research product.';
 
         const extraInfo = isBlend
-          ? ' Supplied as a research vial for laboratory use. Includes <strong>3ml BAC water</strong> and <strong>10 sterile syringes</strong>.'
+          ? ' Accessories (if applicable) are supplied for laboratory handling and measurement.'
           : p.name.includes('Pen')
-            ? ' Each pen includes 10 sterile pen heads for laboratory research use.'
-            : ' Each vial is supplied pre-reconstituted and includes 10 sterile syringes for laboratory research use.';
+            ? ' Each unit includes accessories where applicable for laboratory handling and measurement.'
+            : ' Each unit includes accessories where applicable for laboratory handling and measurement.';
 
-        const unitSuffix = p.name.includes('Pen') ? '/pen' : '/vial';
+        const unitSuffix = p.name.includes('Pen') ? '/unit' : '/unit';
 
         return `
           <div class="col-md-3">
@@ -606,9 +606,7 @@
 
       currentProduct = p;
 
-      const accessoriesLine = p.name.includes('Pen')
-        ? 'Each pen includes 10 sterile pen heads for laboratory research use.'
-        : 'Each vial is supplied pre-reconstituted and includes 10 sterile syringes for laboratory research use.';
+      const accessoriesLine = 'Accessories (if applicable) are supplied for laboratory handling and measurement only.';
 
       let modal = document.getElementById('productModal');
       if (!modal) {
@@ -649,26 +647,24 @@
       document.getElementById('modalStock').innerHTML   = `In stock – ${p.stock} units`;
 
       const descEl = document.getElementById('modalDescription');
-      const isBlend = (p.name || '').toLowerCase().includes('bpc-157') || (p.name || '').toLowerCase().includes('tb500');
+      const nameLower = (p.name || '').toLowerCase();
+      const isBlend = nameLower.includes('bpc-157') || nameLower.includes('tb500');
 
       if (isBlend) {
         descEl.innerHTML = `
-          <p><strong>BPC-157 + TB500</strong> is a commonly used <strong>recovery peptide blend</strong> in laboratory research settings.</p>
-          <p>Typically referenced in studies around <strong>tendon/ligament support, connective tissue repair, inflammation response</strong> and recovery signalling.</p>
-          <p><strong>Supplied with 3ml BAC water and 10 sterile syringes for laboratory research use.</strong></p>
+          <p>This item is supplied as a <strong>research peptide blend</strong> for controlled laboratory study.</p>
+          <p><strong>${accessoriesLine}</strong></p>
           <p class="mb-1"><em>For research use only. Not for human consumption.</em></p>
         `;
       } else if (p.name.includes('Tirzepatide')) {
         descEl.innerHTML = `
-          <p><strong>Tirzepatide</strong> is a dual <strong>GIP/GLP-1 receptor agonist</strong> widely studied in metabolic and weight-management research.</p>
-          <p>Typically used for protocols focused on <strong>appetite control, insulin sensitivity and blood-glucose regulation</strong>.</p>
+          <p>This item is supplied as a <strong>research material</strong> for controlled laboratory study.</p>
           <p><strong>${accessoriesLine}</strong></p>
           <p class="mb-1"><em>For research use only. Not for human consumption.</em></p>
         `;
       } else if (p.name.includes('Retatrutide')) {
         descEl.innerHTML = `
-          <p><strong>Retatrutide</strong> is an advanced <strong>multi-receptor agonist</strong> researched for aggressive weight-management strategies.</p>
-          <p>Often used where <strong>rapid fat loss and metabolic reset</strong> are the focus.</p>
+          <p>This item is supplied as a <strong>research material</strong> for controlled laboratory study.</p>
           <p><strong>${accessoriesLine}</strong></p>
           <p class="mb-1"><em>For research use only. Not for human consumption.</em></p>
         `;
@@ -698,7 +694,7 @@
       input.value = val;
     }
 
-    // FIXED: store product.id in cart (so checkout can deduct stock by ID)
+    // store product.id in cart (so checkout can deduct stock by ID)
     function addToCart(product, qty) {
       const existing = cart.find(item => item.id === product.id);
       if (existing) existing.qty += qty;
