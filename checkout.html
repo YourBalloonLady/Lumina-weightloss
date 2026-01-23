@@ -217,16 +217,35 @@ function saveCartToStorage() {
   try { localStorage.setItem('cart', JSON.stringify(cart)); } catch (e) {}
 }
 
-// called by dropdowns
+// called by dropdowns (UPDATED)
 function setAccessory(index, field, value) {
   if (!cart[index]) return;
-  const v = (value === 'none' ? '' : value);
+
+  const v = (value || '').trim(); // '' if not selected
 
   if (field === 'pen_heads') cart[index].pen_heads = v;
   if (field === 'syringes')  cart[index].syringes  = v;
 
   saveCartToStorage();
-  renderOrderSummary(); // re-render so user sees it reflected
+  renderOrderSummary();
+}
+
+// Validate mandatory selections (NEW)
+function validateAccessories() {
+  const missing = [];
+
+  cart.forEach((item) => {
+    const n = (item?.name || '').toLowerCase();
+
+    if (n.includes('pen') && !String(item.pen_heads || '').trim()) {
+      missing.push(`Select Pen heads for: ${item.name}`);
+    }
+    if (n.includes('vial') && !String(item.syringes || '').trim()) {
+      missing.push(`Select Syringes for: ${item.name}`);
+    }
+  });
+
+  return missing;
 }
 
 // ---------- BUNDLE CALCULATOR ----------
@@ -331,17 +350,18 @@ async function maybeRecoverCart() {
   }
 }
 
+// Dropdown HTML (UPDATED to be mandatory)
 function accessoryDropdownHTML(item, index) {
   const name = item?.name || '';
 
   if (isPenItem(name)) {
-    const current = item.pen_heads ? String(item.pen_heads) : 'none';
+    const current = item.pen_heads ? String(item.pen_heads) : '';
     return `
       <div class="addon-row d-flex align-items-center justify-content-between">
-        <label class="m-0">Pen heads</label>
-        <select class="form-select form-select-sm" style="max-width: 180px;"
+        <label class="m-0">Pen heads <span class="text-danger">*</span></label>
+        <select class="form-select form-select-sm" style="max-width: 180px;" required
           onchange="setAccessory(${index}, 'pen_heads', this.value)">
-          <option value="none" ${current === 'none' ? 'selected' : ''}>Not required</option>
+          <option value="" ${current === '' ? 'selected' : ''} disabled>Select…</option>
           <option value="5" ${current === '5' ? 'selected' : ''}>5</option>
           <option value="10" ${current === '10' ? 'selected' : ''}>10</option>
         </select>
@@ -350,13 +370,13 @@ function accessoryDropdownHTML(item, index) {
   }
 
   if (isVialItem(name)) {
-    const current = item.syringes ? String(item.syringes) : 'none';
+    const current = item.syringes ? String(item.syringes) : '';
     return `
       <div class="addon-row d-flex align-items-center justify-content-between">
-        <label class="m-0">Syringes</label>
-        <select class="form-select form-select-sm" style="max-width: 180px;"
+        <label class="m-0">Syringes <span class="text-danger">*</span></label>
+        <select class="form-select form-select-sm" style="max-width: 180px;" required
           onchange="setAccessory(${index}, 'syringes', this.value)">
-          <option value="none" ${current === 'none' ? 'selected' : ''}>Not required</option>
+          <option value="" ${current === '' ? 'selected' : ''} disabled>Select…</option>
           <option value="5" ${current === '5' ? 'selected' : ''}>5</option>
           <option value="10" ${current === '10' ? 'selected' : ''}>10</option>
         </select>
@@ -444,7 +464,6 @@ async function saveOrderToSupabase(details) {
         qty: i.qty,
         price_each: i.price,
         line_total: i.price * i.qty,
-        // store optional extras (blank if not chosen)
         pen_heads: i.pen_heads || "",
         syringes: i.syringes || ""
       })),
@@ -584,6 +603,14 @@ document.getElementById('addressForm').onsubmit = async function(e) {
     return;
   }
 
+  // NEW: block if mandatory dropdowns not selected
+  const missing = validateAccessories();
+  if (missing.length) {
+    checkoutStatus.textContent = missing[0];
+    checkoutStatus.classList.add('text-danger');
+    return;
+  }
+
   const bundle = calculateBundle(cart);
   total = bundle.finalTotal;
 
@@ -673,7 +700,7 @@ function backToShop() {
     return;
   }
 
-  // ensure cart has extras keys (optional)
+  // ensure cart has extras keys (mandatory dropdowns use blank = not selected)
   cart = cart.map(i => ({
     ...i,
     pen_heads: i.pen_heads || "",
