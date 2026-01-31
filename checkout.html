@@ -283,10 +283,15 @@ function calculateBundle(cart) {
     messages.push('5% vial bundle discount applied (2 vials).');
   }
 
-  if (penQty >= 2) {
-    const d = penTotal * 0.05;
-    discount += d;
-    messages.push('5% pen bundle discount applied (2+ pens).');
+  if (penQty >= 3) {
+  const d = penTotal * 0.10;
+  discount += d;
+  messages.push('10% pen bundle discount applied (3+ pens).');
+} else if (penQty === 2) {
+  const d = penTotal * 0.05;
+  discount += d;
+  messages.push('5% pen bundle discount applied (2 pens).');
+
   }
 
   const finalTotal = Math.max(0, baseTotal - discount);
